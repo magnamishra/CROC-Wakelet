@@ -6,6 +6,11 @@ package:
   name: croc_soc
   authors:
     - "Philippe Sauter <phsauter@iis.ee.ethz.ch>"
+    - "Magna Mishra    <mishram@ethz.ch>"
+    # IMPORTANT: New dependancies added for Wakelet integration 
+    # IMPORTANT: axi_obi added as vendor package to fix .user field issue 
+    # Refer to READ.ME for details on changes 
+
 
 dependencies:
   # IMPORTANT: see vendor_package at the bottom
@@ -18,7 +23,9 @@ dependencies:
   obi_peripherals:      { git: "https://github.com/pulp-platform/obi_peripherals.git",      rev: 21ee04d    } # UART
   idma:                 { git: "https://github.com/pulp-platform/idma.git",                 rev: "__deploy__e618e4d__master" } # master with generated files
   cve2:                 { path: "rtl/cve2" } # a vendor package (no Bender.yml), see below 
-
+  axi_obi:              { git: "https://github.com/pulp-platform/axi_obi.git",              version: 0.1.0}
+  wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev:    7ae7446} #wakelet with ASIC dependacy removed
+  axi:                  { git: "https://github.com/pulp-platform/axi.git",          version: 0.39.8 }
 
 sources:
   # Level 0
@@ -195,3 +202,16 @@ vendor_package:
       - { from: 'rtl/',                                            to: '',                      patch_dir: 'rtl/' }
       - { from: 'README.md',                                       to: 'README.md',             patch_dir: '' }
       - { from: 'doc/03_reference/images/blockdiagram.drawio.svg', to: 'blockdiagram.svg',      patch_dir: '' }
+
+  ##########
+  # axi_obi #
+  ##########
+  - name: axi_obi
+    target_dir: rtl/axi_obi
+    upstream: { git: "https://github.com/pulp-platform/axi_obi.git", rev: "84f21a6524bedcf17a569a62ac01b8a5610819c8" }
+    patch_dir: "rtl/.patches/axi_obi"
+    mapping:
+      - { from: 'src/axi_to_detailed_mem_user.sv', to: 'axi_to_detailed_mem_user.sv', patch_dir: 'src/' }
+      - { from: 'src/axi_to_obi.sv',               to: 'axi_to_obi.sv',               patch_dir: 'src/' }
+      - { from: 'src/obi_to_axi.sv',               to: 'obi_to_axi.sv',               patch_dir: 'src/' }
+      - { from: 'Bender.yml',                      to: 'Bender.yml',                  patch_dir: '' }

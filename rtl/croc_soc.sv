@@ -39,6 +39,7 @@ module croc_soc import croc_pkg::*; #(
   );
 
 // Connection between Croc_domain and User_domain: User Sbr, Croc Mgr
+//Go into Wakelet as Sbr
 sbr_obi_req_t user_sbr_obi_req;
 sbr_obi_rsp_t user_sbr_obi_rsp;
 

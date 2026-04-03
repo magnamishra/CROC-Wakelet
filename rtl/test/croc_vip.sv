@@ -144,6 +144,7 @@ module croc_vip #(
     // Halt hart 0
     jtag_write(dm::DMControl, dm::dmcontrol_t'{resumereq: 1, dmactive: 1, default: '0});
     $display("@%t | [JTAG] Resumed hart 0 ", $time);
+    $display ("right before core hangs");
   endtask
 
   // Read a 32 bit register
@@ -260,6 +261,7 @@ module croc_vip #(
       jtag_write(dm::SBAddress0, CoreStatusAddr);
       jtag_dbg.wait_idle(20);
       jtag_dbg.read_dmi_exp_backoff(dm::SBData0, exit_code);
+      $display("@%t | [EOC] Polling coreStatus: 0x%h", $time,exit_code);
     end while (exit_code == 0);
     exit_code >>= 1;
     if (exit_code)

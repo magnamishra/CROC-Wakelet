@@ -9,8 +9,7 @@
 #
 # Authors:
 # - Thomas Benz     <tbenz@iis.ee.ethz.ch>
-
-
+ 
 set -e  # Exit on error
 set -u  # Error on undefined vars
 
@@ -57,9 +56,9 @@ EOF
 
 run_cmd() {
     if [ "$DRYRUN" = 1 ]; then
-        echo $1
+        echo "$1"
     else
-        eval $1
+        eval "$1"
     fi
 }
 
@@ -74,13 +73,20 @@ generate_rtl_flist() {
         -t verilator \
         -DSYNTHESIS \
         -DSIMULATION \
-        --vlog-arg="-svinputport=compat"
+        -DTARGET_WL_SRAM \
+        --vlog-arg=\"-svinputport=compat\" \
         > compile_rtl.tcl"
 
     run_cmd "echo [INFO][Bender] Remove absolute paths"
     run_cmd "sed -i 's|${CROC_ROOT}|..|g' compile_rtl.tcl"
 
+    run_cmd "echo [INFO][Bender] Remove axi_test.sv missing rand_id_queue_pkg dependency"
+    run_cmd "sed -i '/axi_test.sv/d' compile_rtl.tcl"
+
+
     run_cmd "echo [INFO][Bender] File list generated: compile_rtl.tcl"
+
+
 }
 
 
@@ -99,7 +105,7 @@ generate_netlist_flist() {
         > compile_netlist.tcl"
 
     run_cmd "echo [INFO][Bender] Remove absolute paths"
-    run_cmd "sed -i 's|${CROC_ROOT}|..|g' compile_netlist.tcl"
+    run_cmd "sed -i 's|\${CROC_ROOT}|..|g' compile_netlist.tcl"
 
     run_cmd "echo [INFO][Bender] File list generated: compile_netlist.tcl"
 }
@@ -180,10 +186,10 @@ run_vsim_gui() {
         -gui \
         tb_croc_soc \
         -t 1ns \
-        -voptargs=+acc \
+        -voptargs=\"+acc=npr\"\
         -suppress vsim-3009 \
         -suppress vsim-8683 \
-        -suppress vsim-8386"
+        -suppress vsim-8386" 
 }
 
 
@@ -220,7 +226,7 @@ while [[ $# -gt 0 ]]; do
         # script-specific commands
         --flist)
             generate_rtl_flist
-            generate_netlist_flist
+            #generate_netlist_flist
             shift
             ;;
         --build)

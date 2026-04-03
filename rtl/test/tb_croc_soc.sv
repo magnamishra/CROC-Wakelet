@@ -4,7 +4,8 @@
 //
 // Authors:
 // - Philippe Sauter <phsauter@iis.ee.ethz.ch>
-// - Enrico Zelioli <ezelioli@iis.ee.ethz.ch>
+// - Enrico Zelioli  <ezelioli@iis.ee.ethz.ch>
+// - Magna Mishra    < Only additions for Wakelet addressability test  >
 
 `define TRACE_WAVE
 
@@ -139,13 +140,29 @@ module tb_croc_soc #(
 
     // halt core
     i_vip.jtag_halt();
+    $display("@%t| halted core", $time);
 
     // resume core
     i_vip.jtag_resume();
+    $display("@%t| resumed core", $time);
 
     // wait for non-zero return value (written into core status register)
     $display("@%t | [CORE] Wait for end of code...", $time);
     i_vip.jtag_wait_for_eoc(tb_data);
+
+
+    // ------------------------------------------------------------------
+    // Wakelet addressability test result
+    // tb_data holds the return value of main() in test_bridge.c:
+    //   0  = all tests passed
+    //   !0 = the ID of the first failing test (see test_bridge.c)
+    // ------------------------------------------------------------------
+    if (tb_data == 0) begin
+      $display("@%t | [WAKELET] Addressability test PASSED", $time);
+    end else begin
+      $display("@%t | [WAKELET] Addressability test FAILED (test id: %0d)", $time, tb_data);
+      $fatal(1, "Wakelet addressability test failed");
+    end
 
     // finish simulation
     repeat(50) @(posedge sys_clk);

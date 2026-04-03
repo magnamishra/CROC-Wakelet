@@ -3,12 +3,13 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 # Authors:
-# - Paul Scheffler <paulsc@iis.ee.ethz.ch>
+# - Paul Scheffler  <paulsc@iis.ee.ethz.ch>
 # - Philippe Sauter <phsauter@iis.ee.ethz.ch>
+# - Magna Mishra    < add genfile to include wakelet address update > 
 
 # Toolchain
 RISCV_XLEN    ?= 32
-RISCV_MARCH   ?= rv$(RISCV_XLEN)i_zicsr
+RISCV_MARCH   ?= rv$(RISCV_XLEN)i_zicsr_zifencei
 RISCV_MABI    ?= ilp32
 RISCV_PREFIX  ?= riscv64-unknown-elf-
 RISCV_CC      ?= $(RISCV_PREFIX)gcc
@@ -61,6 +62,19 @@ DEPFILES := $(CRT0_OBJ:.o=.d) $(LIB_OBJS:.o=.d) $(PROG_OBJS:.o=.d)
 # Ensure intermediate object files are not deleted after linking
 .SECONDARY: $(CRT0_OBJ) $(LIB_OBJS) $(PROG_OBJS)
 
+
+#addition - gen_config for wakelet addresses
+
+GEN_CONFIG_SCRIPT ?= gen_config.py
+GEN_CONFIG_OUT    ?= config.h
+GEN_CONFIG_DEPS := ../rtl/croc_pkg.sv ../.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/wl_pkg.sv
+
+$(GEN_CONFIG_OUT): $(GEN_CONFIG_DEPS) $(GEN_CONFIG_SCRIPT)
+	python3 $(GEN_CONFIG_SCRIPT)
+
+#end of change 
+
+
 all: compile
 
 $(BINDIR):
@@ -97,9 +111,12 @@ $(BINDIR)/%.hex: $(BINDIR)/%.elf
 # Phonies
 .PHONY: all clean compile
 
+#change - add new target here 
+
 clean:
 	rm -rf $(BINDIR) $(BUILDDIR)
 
-compile: $(BINDIR) $(BUILDDIR) $(ALL_TARGETS)
+ #compile: $(BINDIR) $(BUILDDIR) $(ALL_TARGETS)
+compile: $(BINDIR) $(BUILDDIR) $(GEN_CONFIG_OUT) $(ALL_TARGETS)
 
 -include $(DEPFILES)

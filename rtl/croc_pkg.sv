@@ -85,9 +85,11 @@ package croc_pkg;
   } croc_xbar_outputs_e;
 
   /// Address map given to the main crossbar
+  /// Modified to add Wakelet from 32'h2000_0000 to 32'h3000_0000
   localparam addr_map_rule_t [3:0] CrocAddrMap = '{
     '{ idx: XbarPeriph,  start_addr: 32'h0000_0000, end_addr: 32'h1000_0000 },
-    '{ idx: XbarUser,    start_addr: 32'h2000_0000, end_addr: 32'h8000_0000 },
+    ///Wakelet goes here 
+    '{ idx: XbarUser,    start_addr: 32'h2000_0000, end_addr: 32'h3000_0000 },
     '{ idx: XbarBank0,   start_addr: 32'h1000_0000, end_addr: 32'h1000_0800 },
     '{ idx: XbarBank0+1, start_addr: 32'h1000_0800, end_addr: 32'h1000_1000 }
   };
@@ -221,13 +223,19 @@ package croc_pkg;
     logic            rvalid;
   } mgr_obi_rsp_t;
 
+
+  ///Wakelet will act as subordinate, use OBI subordinate config only
   /// OBI subordinate configuration (from the crossbar to a subordinate device)
+
+
   localparam obi_pkg::obi_cfg_t SbrObiCfg = '{
     UseRReady:   1'b0,
     CombGnt:     1'b0,
     AddrWidth:     32,
     DataWidth:     32,
-    IdWidth:        1 + cf_math_pkg::idx_width(NumXbarManagers),
+    ///Assuming IDMA is enabled -> Idwidth= 1+ idx(6) = 1+3 =4
+    ///SbrObiCfg.IdWidth inherits 4 
+    IdWidth:        1 + cf_math_pkg::idx_width(NumXbarManagers), 
     Integrity:   1'b0,
     BeFull:      1'b1,
     OptionalCfg:  '0

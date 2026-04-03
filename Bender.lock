@@ -6,6 +6,50 @@ packages:
       Path: rtl/apb
     dependencies:
     - common_cells
+  axi:
+    revision: a256a3b86394fedf19e361047fccfdd7f6ef83e4
+    version: 0.39.9
+    source:
+      Git: https://github.com/pulp-platform/axi.git
+    dependencies:
+    - common_cells
+    - common_verification
+    - tech_cells_generic
+  axi_obi:
+    revision: 84f21a6524bedcf17a569a62ac01b8a5610819c8
+    version: 0.1.0
+    source:
+      Git: https://github.com/pulp-platform/axi_obi.git
+    dependencies:
+    - axi
+    - common_cells
+    - obi
+  axi_riscv_atomics:
+    revision: 430838a10a9bdf1e381d4fcb33907428f3273420
+    version: 0.6.0
+    source:
+      Git: https://github.com/pulp-platform/axi_riscv_atomics
+    dependencies:
+    - axi
+    - common_cells
+    - common_verification
+  cluster_icache:
+    revision: 0e1fb6751d9684d968ba7fb40836e6118b448ecd
+    version: 0.1.1
+    source:
+      Git: https://github.com/pulp-platform/cluster_icache.git
+    dependencies:
+    - axi
+    - common_cells
+    - scm
+    - tech_cells_generic
+  cluster_interconnect:
+    revision: 1284def6c0b7f7e9355eb093d00883ad9dead1b7
+    version: null
+    source:
+      Git: https://github.com/pulp-platform/cluster_interconnect.git
+    dependencies:
+    - common_cells
   common_cells:
     revision: null
     version: null
@@ -25,7 +69,58 @@ packages:
     version: null
     source:
       Path: rtl/cve2
-    dependencies: []
+    dependencies:
+    - common_cells
+  fpnew:
+    revision: a8e0cba6dd50f357ece73c2c955d96efc3c6c315
+    version: null
+    source:
+      Git: https://github.com/pulp-platform/cvfpu.git
+    dependencies:
+    - common_cells
+    - fpu_div_sqrt_mvp
+  fpu_div_sqrt_mvp:
+    revision: 86e1f558b3c95e91577c41b2fc452c86b04e85ac
+    version: 1.0.4
+    source:
+      Git: https://github.com/pulp-platform/fpu_div_sqrt_mvp.git
+    dependencies:
+    - common_cells
+  hci:
+    revision: b7253f49a1fa4105d913c7ede08717975414b739
+    version: 2.3.0
+    source:
+      Git: https://github.com/pulp-platform/hci.git
+    dependencies:
+    - cluster_interconnect
+    - common_cells
+    - hwpe-stream
+    - l2_tcdm_hybrid_interco
+    - redundancy_cells
+    - register_interface
+  hwpe-ctrl:
+    revision: 1916c72f024175f1fe351acc3db3c6e9925a117d
+    version: 1.7.3
+    source:
+      Git: https://github.com/pulp-platform/hwpe-ctrl.git
+    dependencies:
+    - tech_cells_generic
+  hwpe-datamover-example:
+    revision: bf8a5e13c2700d93039b6455bdcab689d4ced810
+    version: null
+    source:
+      Git: https://github.com/sermazz/hwpe-datamover-example.git
+    dependencies:
+    - hci
+    - hwpe-ctrl
+    - hwpe-stream
+  hwpe-stream:
+    revision: 35f6bb74b28acc5922262cf0244e7a7c7fe6a589
+    version: 1.9.2
+    source:
+      Git: https://github.com/pulp-platform/hwpe-stream.git
+    dependencies:
+    - tech_cells_generic
   idma:
     revision: null
     version: null
@@ -34,6 +129,12 @@ packages:
     dependencies:
     - common_cells
     - obi
+  l2_tcdm_hybrid_interco:
+    revision: fa55e72859dcfb117a2788a77352193bef94ff2b
+    version: 1.0.0
+    source:
+      Git: https://github.com/pulp-platform/L2_tcdm_hybrid_interco.git
+    dependencies: []
   obi:
     revision: null
     version: null
@@ -50,6 +151,26 @@ packages:
     dependencies:
     - common_cells
     - obi
+  redundancy_cells:
+    revision: c37bdb47339bf70e8323de8df14ea8bbeafb6583
+    version: null
+    source:
+      Git: https://github.com/pulp-platform/redundancy_cells.git
+    dependencies:
+    - common_cells
+    - common_verification
+    - register_interface
+    - tech_cells_generic
+  register_interface:
+    revision: d6e1d4cdaab7870f4faf3f88a1c788eaf5ac129d
+    version: 0.4.7
+    source:
+      Git: https://github.com/pulp-platform/register_interface.git
+    dependencies:
+    - apb
+    - axi
+    - common_cells
+    - common_verification
   riscv-dbg:
     revision: null
     version: null
@@ -58,6 +179,28 @@ packages:
     dependencies:
     - common_cells
     - tech_cells_generic
+  scm:
+    revision: 1976c7efb4979271eee2abe262fde0f9a20e2557
+    version: 1.2.1
+    source:
+      Git: https://github.com/pulp-platform/scm.git
+    dependencies:
+    - tech_cells_generic
+  snitch_cluster:
+    revision: 1e48b80ad50a62a100b9ee50513f80f43b349b58
+    version: null
+    source:
+      Git: https://github.com/pulp-platform/snitch_cluster.git
+    dependencies:
+    - axi
+    - axi_riscv_atomics
+    - cluster_icache
+    - common_cells
+    - fpnew
+    - idma
+    - register_interface
+    - riscv-dbg
+    - tech_cells_generic
   tech_cells_generic:
     revision: null
     version: null
@@ -65,3 +208,17 @@ packages:
       Path: rtl/tech_cells_generic
     dependencies:
     - common_verification
+  wakelet:
+    revision: 7ae744686fd8f67f33d2814976b1532e3439927d
+    version: null
+    source:
+      Git: https://github.com/magnamishra/wakelet.git
+    dependencies:
+    - axi
+    - common_cells
+    - hci
+    - hwpe-ctrl
+    - hwpe-datamover-example
+    - scm
+    - snitch_cluster
+    - tech_cells_generic

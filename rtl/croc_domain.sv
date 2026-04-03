@@ -5,6 +5,9 @@
 // Authors:
 // - Philippe Sauter <phsauter@iis.ee.ethz.ch>
 
+//changes for Wakelet//
+//use User as sbr signals to pass obi transactions into OBI to AXI bridge 
+
 module croc_domain import croc_pkg::*; #(
   parameter int unsigned GpioCount = 16,
   parameter int unsigned NumExternalIrqs = 4
@@ -32,10 +35,12 @@ module croc_domain import croc_pkg::*; #(
   /// User OBI interface
   /// User as subordinate (from core to user module)
   /// Address space 0x2000_0000 - 0x8000_0000
-  output sbr_obi_req_t user_sbr_obi_req_o,
+  ///Wakelet goes here 
+  output sbr_obi_req_t user_sbr_obi_req_o, 
   input  sbr_obi_rsp_t user_sbr_obi_rsp_i,
 
   /// User as manager (from user module to SRAM/peripherals)
+  ///unused for Wakelet 
   input  mgr_obi_req_t user_mgr_obi_req_i,
   output mgr_obi_rsp_t user_mgr_obi_rsp_o,
 

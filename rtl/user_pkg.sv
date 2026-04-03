@@ -30,6 +30,7 @@ package user_pkg;
   } user_demux_outputs_e;
 
   /// Address rules given to user domain demultiplexer (see croc_pkg.sv for examples)
+  /// Wakelet uses address space from 32'h2000_0000 to 32'h3000_0000
   localparam croc_pkg::addr_map_rule_t [0:0] UserAddrMap = '{
     '{
       idx:        UserDesign,
