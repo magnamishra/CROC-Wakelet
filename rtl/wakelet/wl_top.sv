@@ -602,6 +602,33 @@ module wl_top
   assign core_instr_demux_instr_mem_data = instr_mem_muxed_r_data;
   assign bus_instr_mem_r_data = instr_mem_muxed_r_data;
 
+  // Stream arbiter for read channel
+
+  // Cycle 1 
+  // Arbiter asserts instr_mem_muxed_r_en =1 
+  // core_instr moves to READ_AND_PERF in FSM
+  // SRAM starts and needs 1 cycle to complete 
+
+  // Cycle 2 
+  // SRAM has r.data ready 
+  // Till then  Arbiter needs to hold instr_mem_muxed_r_en =1 
+  // Arbiter sets instr_mem_muxed_r_en LOW 
+  // core_instr moves to WAIT_REQ
+  // r_valid is never high 
+
+   logic r_en_hold;
+
+  // Hack forces a hold when r_valid goes low in WAIT_REQ
+  // This doesn't solce the actual problem in FSM
+  // It only confirms that bridge works for both DMEM and IMEM 
+
+   always_ff @(posedge clk_i or negedge rst_ni) begin
+    if (!rst_ni) r_en_hold <= 1'b0;
+    else if (instr_mem_muxed_r_en) r_en_hold <= 1'b1;
+    else if (instr_mem_muxed_r_valid) r_en_hold <= 1'b0;
+  end
+  assign r_en_i_held = instr_mem_muxed_r_en | r_en_hold; 
+
   /* Instruction memory */
 
   core_instr_mem #(
@@ -613,7 +640,7 @@ module wl_top
     // R/W request grant (always 1 here)
     .rw_gnt_o ( bus_instr_mem_rw_gnt ),
     // Read port
-    .r_en_i ( instr_mem_muxed_r_en ),
+    .r_en_i   (    r_en_i_hold         ),
     .r_addr_i ( instr_mem_muxed_r_addr ),
     .r_data_o ( instr_mem_muxed_r_data ),
     .r_valid_o ( instr_mem_muxed_r_valid ),
