@@ -211,7 +211,29 @@ vendor_package:
     upstream: { git: "https://github.com/pulp-platform/axi_obi.git", rev: "84f21a6524bedcf17a569a62ac01b8a5610819c8" }
     patch_dir: "rtl/.patches/axi_obi"
     mapping:
-      - { from: 'src/axi_to_detailed_mem_user.sv', to: 'axi_to_detailed_mem_user.sv', patch_dir: 'src/' }
-      - { from: 'src/axi_to_obi.sv',               to: 'axi_to_obi.sv',               patch_dir: 'src/' }
-      - { from: 'src/obi_to_axi.sv',               to: 'obi_to_axi.sv',               patch_dir: 'src/' }
-      - { from: 'Bender.yml',                      to: 'Bender.yml',                  patch_dir: '' }
+      - { from: 'src/axi_to_detailed_mem_user.sv', to: 'axi_to_detailed_mem_user.sv', patch_dir: '' }
+      - { from: 'src/axi_to_obi.sv',               to: 'axi_to_obi.sv',               patch_dir: '' }
+      - { from: 'src/obi_to_axi.sv',               to: 'obi_to_axi.sv',               patch_dir: '' }
+      - { from: 'Bender.yml',                       to: 'Bender.yml',                  patch_dir: '' }
+
+ ###########
+ # wakelet #
+ ###########
+
+  - name: wakelet
+    target_dir: rtl/wakelet
+    upstream: { git: "https://github.com/magnamishra/wakelet.git", rev: "7ae744686fd8f67f33d2814976b1532e3439927d" }
+    patch_dir: "rtl/.patches/wakelet"
+    mapping:
+      - { from: 'hw/wl_pkg.sv',          to: 'wl_pkg.sv',          patch_dir: 'hw/' }
+      - { from: 'hw/snitch_bootrom.sv',  to: 'snitch_bootrom.sv',  patch_dir: 'hw/' }
+      - { from: 'hw/core_instr_mem.sv',  to: 'core_instr_mem.sv',  patch_dir: 'hw/' }
+      - { from: 'hw/core_instr_demux.sv',to: 'core_instr_demux.sv',patch_dir: 'hw/' }
+      - { from: 'hw/core_data_mem.sv',   to: 'core_data_mem.sv',   patch_dir: 'hw/' }
+      - { from: 'hw/core_data_demux.sv', to: 'core_data_demux.sv', patch_dir: 'hw/' }
+      - { from: 'hw/core_subsystem.sv',  to: 'core_subsystem.sv',  patch_dir: 'hw/' }
+      - { from: 'hw/wl_registers.sv',    to: 'wl_registers.sv',    patch_dir: 'hw/' }
+      - { from: 'hw/adapter_axi2hci.sv', to: 'adapter_axi2hci.sv', patch_dir: 'hw/' }
+      - { from: 'hw/hwpe_subsystem.sv',  to: 'hwpe_subsystem.sv',  patch_dir: 'hw/' }
+      - { from: 'hw/wl_top.sv',          to: 'wl_top.sv',          patch_dir: 'hw/' }
+      - { from: 'Bender.yml',            to: 'Bender.yml',          patch_dir: '' }

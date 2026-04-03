@@ -268,7 +268,7 @@ module croc_vip #(
       $display("@%t | [JTAG] Simulation finished: FAIL (return code 0x%0h)", $time, exit_code);
     else
       $display("@%t | [JTAG] Simulation finished: SUCCESS", $time);
-    $finish();
+    // removed to make sure test bench handles it $finish();
   endtask
 
   ////////////

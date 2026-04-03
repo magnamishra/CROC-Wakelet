@@ -1,0 +1,21 @@
+diff --git a/src/obi_to_axi.sv b/src/obi_to_axi.sv
+index aba266f..190a81f 100644
+--- a/src/obi_to_axi.sv
++++ b/src/obi_to_axi.sv
+@@ -355,9 +355,14 @@ module obi_to_axi #(
+   end
+ 
+   // User signal concatenation is handled outside
++  if (!AxiLite) begin : gen_user_assign
++    assign axi_rsp_b_user_o = axi_rsp_i.b.user;
++    assign axi_rsp_r_user_o = axi_rsp_i.r.user;
++  end else begin : gen_user_assign_lite
++    assign axi_rsp_b_user_o = '0;
++    assign axi_rsp_r_user_o = '0;
++  end
+ 
+-  assign axi_rsp_b_user_o = axi_rsp_i.b.user;
+-  assign axi_rsp_r_user_o = axi_rsp_i.r.user;
+   assign axi_rsp_channel_sel = rsp_sel;
+   if (ObiCfg.OptionalCfg.RUserWidth) begin : gen_ruser
+     assign obi_rsp_o.r.r_optional.ruser = obi_rsp_user_i;

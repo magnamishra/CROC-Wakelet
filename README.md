@@ -159,7 +159,61 @@ You need to build/install the required tools manually:
 - (Optional) [Verilator](https://github.com/verilator/verilator): Simulator
 - (Optional) Questasim/Modelsim: Simulator
 
-## Getting started
+## Getting started 
+
+## Wakelet Integration 
+This repository integrates [Wakelet](https://github.com/magnamishra/wakelet.git), a minimal cluster-like infrastructure featuring a Snitch core with private instruction and data memories, connected to CroC's user domain via an OBI-to-AXI Lite bridge.
+
+**Note:** Only RTL simulation has been tested with the Wakelet integration. Synthesis and place & route flows have not been validated and may require additional fixes.
+
+### Architecture
+
+Wakelet is instantiated in `rtl/user_domain.sv` and occupies the address space from `0x2000_0000` to `0x3000_0000`:
+
+| Start Address   | Stop Address    | Description                |
+|-----------------|-----------------|----------------------------|
+| `0x2001_0000`   | `0x2001_0200`   | Wakelet instruction memory |
+| `0x2002_0000`   | `0x2002_0200`   | Wakelet data memory        |
+
+### Simulation Setup
+
+To simulate with Wakelet, the following steps are required:
+
+1. **Resolve Bender dependencies** ? version conflicts exist between Wakelet and other dependencies. These are resolved via `Bender.local`:
+```yaml
+overrides:
+  axi: { git: "https://github.com/pulp-platform/axi.git", version: "=0.39.9" }
+  hci: { git: "https://github.com/pulp-platform/hci.git", version: "=2.3.0" }
+  register_interface: { git: "https://github.com/pulp-platform/register_interface.git", version: "=0.4.7" }
+```
+
+2. **Checkout dependencies**:
+```sh
+bender checkout
+bender vendor init
+```
+
+3. **Compile and simulate**:
+```sh
+cd vsim && ./run_vsim.sh --build --run ../sw/bin/test/test_bridge.hex
+```
+
+### Fixes and Patches
+
+#### `obi_to_axi.sv` (axi_obi v0.1.0)
+The user signal assignments `axi_rsp_b_user_o` and `axi_rsp_r_user_o` were unconditionally accessing the `.user` field on the AXI response struct. When `AxiLite = 1'b1`, the response type is an AXI Lite struct which does not have a `user` field in the B and R channels, causing `vopt-13276` errors. The fix guards these assignments with `if (!AxiLite)`. This fix is committed in `rtl/axi_obi/obi_to_axi.sv`.
+
+#### `wl_top.sv` (Wakelet)
+The instruction memory read path has a timing incompatibility between the stream arbiter and `core_instr_mem`. The arbiter deasserts `r_en_i` before the SRAM completes its 1-cycle read, causing `core_instr_mem` to abort. A hold register `r_en_hold` is added to keep `r_en_i` high until `r_valid_o` is asserted.
+
+#### `TARGET_WL_SRAM` define
+Wakelet's memories require either `TARGET_WL_SCM` or `TARGET_WL_SRAM` to be defined. For RTL simulation, `TARGET_WL_SRAM` is used and is automatically added by `run_vsim.sh --flist`.
+
+#### `axi_test.sv` exclusion
+`axi_test.sv` from the `axi` dependency requires `rand_id_queue_pkg` which is not available in this project. It is automatically removed from `compile_rtl.tcl` by `run_vsim.sh --flist`.
+
+
+## CROC standalone 
 
 The SoC is fully functional as-is and a simple software example is provided for simulation.
 To run the synthesis and place & route flow execute:
