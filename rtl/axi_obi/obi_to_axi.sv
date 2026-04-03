@@ -3,14 +3,6 @@
 // SPDX-License-Identifier: SHL-0.51
 
 // Michael Rogenmoser <michaero@iis.ee.ethz.ch>
-// Magna Mishra < mishram@ethz.ch >
-
-// Apply patch to fix axi_rsp_i.b.user/axi_rsp_i.r.user
-// These assignments were not gated by AXILite
-// Without the patch, code will always look for B and R channel
-// on user field which are not a part of AXILite 
-// Modified lines 365 - 377
-
 
 `include "common_cells/registers.svh"
 
@@ -362,20 +354,10 @@ module obi_to_axi #(
       (axi_rsp_i.r.resp == axi_pkg::RESP_EXOKAY);
   end
 
-  // Patch applied here
-
   // User signal concatenation is handled outside
-  // assign axi_rsp_b_user_o = axi_rsp_i.b.user;
-  // assign axi_rsp_r_user_o = axi_rsp_i.r.user;
-  
-  if (!AxiLite) begin: gen_user_assign 
-     assign axi_rsp_b_user_o = axi_rsp_i.b.user;
-     assign axi_rsp_r_user_o = axi_rsp_i.r.user;
-  end else begin: gen_user_assign_axi_lite
-    assign axi_rsp_b_user_o = '0;
-     assign axi_rsp_r_user_o = '0;
-  end 
 
+  assign axi_rsp_b_user_o = axi_rsp_i.b.user;
+  assign axi_rsp_r_user_o = axi_rsp_i.r.user;
   assign axi_rsp_channel_sel = rsp_sel;
   if (ObiCfg.OptionalCfg.RUserWidth) begin : gen_ruser
     assign obi_rsp_o.r.r_optional.ruser = obi_rsp_user_i;
