@@ -353,9 +353,7 @@ module obi_to_axi #(
       (axi_rsp_i.b.resp == axi_pkg::RESP_EXOKAY) :
       (axi_rsp_i.r.resp == axi_pkg::RESP_EXOKAY);
   end
-
   // User signal concatenation is handled outside
-
   assign axi_rsp_b_user_o = axi_rsp_i.b.user;
   assign axi_rsp_r_user_o = axi_rsp_i.r.user;
   assign axi_rsp_channel_sel = rsp_sel;
