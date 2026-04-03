@@ -616,7 +616,8 @@ module wl_top
   // core_instr moves to WAIT_REQ
   // r_valid is never high 
 
-   logic r_en_hold;
+  logic r_en_hold;
+  logic r_en_i_held; 
 
   // Hack forces a hold when r_valid goes low in WAIT_REQ
   // This doesn't solce the actual problem in FSM
@@ -640,7 +641,7 @@ module wl_top
     // R/W request grant (always 1 here)
     .rw_gnt_o ( bus_instr_mem_rw_gnt ),
     // Read port
-    .r_en_i   (    r_en_i_hold         ),
+    .r_en_i   (  r_en_i_held  ),
     .r_addr_i ( instr_mem_muxed_r_addr ),
     .r_data_o ( instr_mem_muxed_r_data ),
     .r_valid_o ( instr_mem_muxed_r_valid ),

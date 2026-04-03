@@ -354,8 +354,13 @@ module obi_to_axi #(
       (axi_rsp_i.r.resp == axi_pkg::RESP_EXOKAY);
   end
   // User signal concatenation is handled outside
-  assign axi_rsp_b_user_o = axi_rsp_i.b.user;
-  assign axi_rsp_r_user_o = axi_rsp_i.r.user;
+   if (!AxiLite) begin : gen_user_assign
+      assign axi_rsp_b_user_o = axi_rsp_i.b.user;
+      assign axi_rsp_r_user_o = axi_rsp_i.r.user;
+   end else begin : gen_user_assign_lite
+      assign axi_rsp_b_user_o = '0;
+      assign axi_rsp_r_user_o = '0;
+   end
   assign axi_rsp_channel_sel = rsp_sel;
   if (ObiCfg.OptionalCfg.RUserWidth) begin : gen_ruser
     assign obi_rsp_o.r.r_optional.ruser = obi_rsp_user_i;

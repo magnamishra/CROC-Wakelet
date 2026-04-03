@@ -1215,9 +1215,9 @@ if {[catch { vlog -incr -sv \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/obi/include" \
-    "$ROOT/.bender/git/checkouts/axi_obi-7b5474ddc0a2b9f4/src/axi_to_detailed_mem_user.sv" \
-    "$ROOT/.bender/git/checkouts/axi_obi-7b5474ddc0a2b9f4/src/axi_to_obi.sv" \
-    "$ROOT/.bender/git/checkouts/axi_obi-7b5474ddc0a2b9f4/src/obi_to_axi.sv" \
+    "$ROOT/rtl/axi_obi/axi_to_detailed_mem_user.sv" \
+    "$ROOT/rtl/axi_obi/axi_to_obi.sv" \
+    "$ROOT/rtl/axi_obi/obi_to_axi.sv" \
 }]} {return 1}
 
 if {[catch { vlog -incr -sv \
@@ -1292,17 +1292,17 @@ if {[catch { vlog -incr -sv \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/snitch_ssr/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/tcdm_interface/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
-    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/wl_pkg.sv" \
-    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/snitch_bootrom.sv" \
-    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/core_instr_mem.sv" \
-    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/core_instr_demux.sv" \
-    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/core_data_mem.sv" \
-    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/core_data_demux.sv" \
-    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/core_subsystem.sv" \
-    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/wl_registers.sv" \
-    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/adapter_axi2hci.sv" \
-    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/hwpe_subsystem.sv" \
-    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/wl_top.sv" \
+    "$ROOT/rtl/wakelet/wl_pkg.sv" \
+    "$ROOT/rtl/wakelet/snitch_bootrom.sv" \
+    "$ROOT/rtl/wakelet/core_instr_mem.sv" \
+    "$ROOT/rtl/wakelet/core_instr_demux.sv" \
+    "$ROOT/rtl/wakelet/core_data_mem.sv" \
+    "$ROOT/rtl/wakelet/core_data_demux.sv" \
+    "$ROOT/rtl/wakelet/core_subsystem.sv" \
+    "$ROOT/rtl/wakelet/wl_registers.sv" \
+    "$ROOT/rtl/wakelet/adapter_axi2hci.sv" \
+    "$ROOT/rtl/wakelet/hwpe_subsystem.sv" \
+    "$ROOT/rtl/wakelet/wl_top.sv" \
 }]} {return 1}
 
 if {[catch { vlog -incr -sv \

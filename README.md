@@ -195,7 +195,9 @@ bender vendor init
 
 3. **Compile and simulate**:
 ```sh
-cd vsim && ./run_vsim.sh --build --run ../sw/bin/test/test_bridge.hex
+cd vsim && ./run_vsim.sh --flist --build --run-gui ../sw/bin/test/test_bridge.hex
+
+--flist needs to be executed only once while the RTL is compiled for the first time. Subsequent runs will work with ./run_vsim.sh --build --run-gui ../sw/bin/test/test_bridge.hex
 ```
 
 ### Fixes and Patches

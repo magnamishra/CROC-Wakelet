@@ -83,12 +83,16 @@ generate_rtl_flist() {
     run_cmd "echo [INFO][Bender] Remove axi_test.sv missing rand_id_queue_pkg dependency"
     run_cmd "sed -i '/axi_test.sv/d' compile_rtl.tcl"
 
+    run_cmd "echo [INFO][Bender] Use vendored axi_obi"
+    run_cmd "sed -i 's|\$ROOT/.bender/git/checkouts/axi_obi-7b5474ddc0a2b9f4/src/|\$ROOT/rtl/axi_obi/|g' compile_rtl.tcl"
+
+    run_cmd "echo [INFO][Bender] Use vendored wakelet"
+    run_cmd "sed -i 's|\$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/|\$ROOT/rtl/wakelet/|g' compile_rtl.tcl"
 
     run_cmd "echo [INFO][Bender] File list generated: compile_rtl.tcl"
 
 
 }
-
 
 generate_netlist_flist() {
     run_cmd "echo [INFO][Bender] Generate compile_netlist.tcl"
@@ -186,7 +190,7 @@ run_vsim_gui() {
         -gui \
         tb_croc_soc \
         -t 1ns \
-        -voptargs=\"+acc=npr\"\
+        -voptargs=\"+acc\"\
         -suppress vsim-3009 \
         -suppress vsim-8683 \
         -suppress vsim-8386 \
