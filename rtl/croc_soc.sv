@@ -51,6 +51,9 @@ localparam int unsigned NumExternalIrqs = 4;
 logic [NumExternalIrqs-1:0] interrupts;
 logic [      GpioCount-1:0] gpio_in_sync;
 
+logic int_io;
+logic int_ack_o;
+
 croc_domain #(
   .GpioCount       ( GpioCount       ),
   .NumExternalIrqs ( NumExternalIrqs )
@@ -101,7 +104,10 @@ user_domain #(
   .user_mgr_obi_rsp_i ( user_mgr_obi_rsp ),
 
   .gpio_in_sync_i ( gpio_in_sync ),
-  .interrupts_o   ( interrupts   )
+  .interrupts_o   ( interrupts   ),
+
+  .int_io ( int_io ),
+  .int_ack_o (int_ack_o )
 );
 
 endmodule

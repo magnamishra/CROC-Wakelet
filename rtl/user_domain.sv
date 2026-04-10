@@ -30,12 +30,21 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
   input  mgr_obi_rsp_t user_mgr_obi_rsp_i, // Tied off to 0 for integrating Wakelet
 
   input  logic [      GpioCount-1:0] gpio_in_sync_i, // synchronized GPIO inputs
-  output logic [NumExternalIrqs-1:0] interrupts_o    // interrupts to core
+  output logic [NumExternalIrqs-1:0] interrupts_o,    // interrupts to core
+
+  //interrupt from Wakelet to drive to sleep 
+  inout logic int_io,
+  //acknowledgment to wakelet for sleep 
+  output logic int_ack_o
+
 );
 
   ///Wakelet interrupt gets tied off here 
-  assign interrupts_o = '0;
 
+  //CPU expects active high, hence the inversion
+  assign interrupts_o[0] = ~int_io;
+  assign interrupts_o[NumExternalIrqs-1:1] = '0;
+  assign int_ack_o = '0; //TO DO: tie off before CPU
 
   //////////////////////
   // User Manager MUX //
@@ -220,7 +229,10 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
 
     // AXI wide interface (slave port), for sensors
     .axi_wide_slv_req_i  (                ),
-    .axi_wide_slv_rsp_o  (                )
+    .axi_wide_slv_rsp_o  (                ),
+
+    .int_io ( int_io ),
+    .int_ack_i ( int_ack_o )
   );
 
 
