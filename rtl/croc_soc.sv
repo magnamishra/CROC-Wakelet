@@ -29,6 +29,7 @@ module croc_soc import croc_pkg::*; #(
 );
 
   logic synced_rst_n;
+  logic wakeup; 
 
   rstgen i_rstgen (
     .clk_i,
@@ -85,7 +86,10 @@ croc_domain #(
   .user_mgr_obi_rsp_o  ( user_mgr_obi_rsp ),
 
   .interrupts_i ( interrupts ),
-  .core_busy_o  ( status_o   )
+  .core_busy_o  ( status_o   ),
+  .ext_irq_i    ( int_io     ),
+  .int_ack_o   ( int_ack_o  ),
+  .wakeup_o    (  wakeup    )
 );
 
 user_domain #(
@@ -107,7 +111,8 @@ user_domain #(
   .interrupts_o   ( interrupts   ),
 
   .int_io ( int_io ),
-  .int_ack_o (int_ack_o )
+  .int_ack_o (int_ack_o ),
+  .wakeup_i   (  wakeup  )
 );
 
 endmodule

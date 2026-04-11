@@ -45,7 +45,10 @@ module croc_domain import croc_pkg::*; #(
   output mgr_obi_rsp_t user_mgr_obi_rsp_o,
 
   input  logic [NumExternalIrqs-1:0] interrupts_i,
-  output logic core_busy_o
+  output logic core_busy_o,
+  input  logic ext_irq_i,      //wakelet meip 
+  output logic int_ack_o,      // Wakelet ack via CLINT MSIP
+  output logic wakeup_o        // wakelet wakeup
 );
 
   // -----------------
@@ -55,7 +58,8 @@ module croc_domain import croc_pkg::*; #(
   logic debug_req;
   logic fetch_enable;
 
-  // interrupts (irqs)
+  // interrupts (irqs)  
+  logic clint_msip; 
   logic clint_timer_irq;
   logic clint_software_irq;
   logic obi_timer_irq;
@@ -136,6 +140,7 @@ module croc_domain import croc_pkg::*; #(
   sbr_obi_req_t xbar_periph_obi_req;
   sbr_obi_rsp_t xbar_periph_obi_rsp;
 
+
   // error (connected to bus error slave)
   sbr_obi_req_t xbar_error_obi_req;
   sbr_obi_rsp_t xbar_error_obi_rsp;
@@ -198,6 +203,10 @@ module croc_domain import croc_pkg::*; #(
   sbr_obi_req_t bootrom_obi_req;
   sbr_obi_rsp_t bootrom_obi_rsp;
 
+  //wakelet wakeup peripheral bus 
+  sbr_obi_req_t wakelet_up_obi_req;
+  sbr_obi_rsp_t wakelet_up_obi_rsp;
+
   // Fanout to individual peripherals
   assign error_obi_req                     = all_periph_obi_req[PeriphError];
   assign all_periph_obi_rsp[PeriphError]   = error_obi_rsp;
@@ -217,6 +226,8 @@ module croc_domain import croc_pkg::*; #(
   assign all_periph_obi_rsp[PeriphClint]   = clint_obi_rsp;
   assign bootrom_obi_req                   = all_periph_obi_req[PeriphBootrom];
   assign all_periph_obi_rsp[PeriphBootrom] = bootrom_obi_rsp;
+  assign wakelet_up_obi_req              = all_periph_obi_req[PeriphWakeletUp];
+  assign all_periph_obi_rsp[PeriphWakeletUp] = wakelet_up_obi_rsp;
 
 
   // -----------------
@@ -231,6 +242,7 @@ module croc_domain import croc_pkg::*; #(
     .irqs_i         ( interrupts         ),
     .timer_irq_i    ( clint_timer_irq    ),
     .software_irq_i ( clint_software_irq ),
+    .ext_irq_i       ( ext_irq_i          ),
 
     .boot_addr_i    ( BootromAddr ),
 
@@ -620,6 +632,9 @@ module croc_domain import croc_pkg::*; #(
   );
 
   // CLINT
+  
+
+
   clint #(
     .obi_req_t ( sbr_obi_req_t ),
     .obi_rsp_t ( sbr_obi_rsp_t )
@@ -629,10 +644,12 @@ module croc_domain import croc_pkg::*; #(
     .rtc_i          ( ref_clk_i          ),
     .software_irq_o ( clint_software_irq ),
     .timer_irq_o    ( clint_timer_irq    ),
+    .msip_o         ( clint_msip         ),
     .obi_req_i      ( clint_obi_req      ),
     .obi_rsp_o      ( clint_obi_rsp      )
   );
 
+  assign int_ack_o = clint_msip; 
   // OBI timer
   obi_timer #(
     .obi_req_t ( sbr_obi_req_t ),
@@ -657,6 +674,19 @@ module croc_domain import croc_pkg::*; #(
     .obi_req_i ( bootrom_obi_req ),
     .obi_rsp_o ( bootrom_obi_rsp )
   );
+
+// Wakelet Up
+croc_wakelet_up #(
+  .obi_req_t ( sbr_obi_req_t ),
+  .obi_rsp_t ( sbr_obi_rsp_t )
+) i_croc_wakelet_up (
+  .clk_i,
+  .rst_ni,
+  .obi_req_i ( wakelet_up_obi_req ),
+  .obi_rsp_o ( wakelet_up_obi_rsp ),
+  .int_io    ( ext_irq_i          ),
+  .wakeup_o  ( wakeup_o           )
+);
 
   // Peripheral space error subordinate
   obi_err_sbr #(

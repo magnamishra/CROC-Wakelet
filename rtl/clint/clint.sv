@@ -4,6 +4,7 @@
 //
 // Authors:
 // - Enrico Zelioli <ezelioli@iis.ee.ethz.ch>
+// - Magna Mishra < expose CLINT to drive sleep ack to CROC > 
 
 module clint #(
   parameter type         obi_req_t = logic,
@@ -15,6 +16,7 @@ module clint #(
   input  logic     rtc_i,
   output logic     software_irq_o,
   output logic     timer_irq_o,
+  output logic msip_o,          // new : expose for int_ack to wakelet
   input  obi_req_t obi_req_i,
   output obi_rsp_t obi_rsp_o
 );
@@ -43,6 +45,7 @@ module clint #(
 
   // Interrupt generation
   assign software_irq_o = msip_q;
+  assign msip_o         = msip_q; // new : same signal, software and Wakelet both get the value
   assign timer_irq_o    = (mtime_q >= mtimecmp_q) ? 1'b1 : 1'b0;
 
   // Rising edge detection

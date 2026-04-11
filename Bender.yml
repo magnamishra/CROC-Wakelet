@@ -53,6 +53,7 @@ sources:
       - rtl/gpio/gpio.sv
       - rtl/clint/clint.sv
       - rtl/obi_timer/obi_timer.sv
+      - rtl/croc_wakelet_up/croc_wakelet_up.sv
       # Level 2
       - rtl/croc_domain.sv
       - rtl/user_domain.sv
@@ -233,6 +234,7 @@ vendor_package:
       - { from: 'hw/core_data_demux.sv', to: 'core_data_demux.sv', patch_dir: 'hw/' }
       - { from: 'hw/core_subsystem.sv',  to: 'core_subsystem.sv',  patch_dir: 'hw/' }
       - { from: 'hw/wl_registers.sv',    to: 'wl_registers.sv',    patch_dir: 'hw/' }
+      - { from: 'hw/wl_ipc.sv',          to: 'wl_ipc.sv',          patch_dir: 'hw/' }
       - { from: 'hw/adapter_axi2hci.sv', to: 'adapter_axi2hci.sv', patch_dir: 'hw/' }
       - { from: 'hw/hwpe_subsystem.sv',  to: 'hwpe_subsystem.sv',  patch_dir: 'hw/' }
       - { from: 'hw/wl_top.sv',          to: 'wl_top.sv',          patch_dir: 'hw/' }

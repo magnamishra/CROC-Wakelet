@@ -35,16 +35,18 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
   //interrupt from Wakelet to drive to sleep 
   inout logic int_io,
   //acknowledgment to wakelet for sleep 
-  output logic int_ack_o
+  input logic int_ack_i,
+  input logic wakeup_i
 
 );
 
   ///Wakelet interrupt gets tied off here 
 
   //CPU expects active high, hence the inversion
-  assign interrupts_o[0] = ~int_io;
+  // changed here -> no fast interrupts. this is now meip for CROC. 
+  assign interrupts_o[0] = '0;
   assign interrupts_o[NumExternalIrqs-1:1] = '0;
-  assign int_ack_o = '0; //TO DO: tie off before CPU
+
 
   //////////////////////
   // User Manager MUX //
@@ -223,7 +225,7 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
 
     // Wake-up request to core
     ///TO DO: Integrate interrupts and AXI slaves 
-    .irq_i              (       '0        ),
+    .irq_i              (       wakeup_i      ),
     // End of computation and return value
     .eoc_o              (                 ),
 
@@ -232,7 +234,7 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
     .axi_wide_slv_rsp_o  (                ),
 
     .int_io ( int_io ),
-    .int_ack_i ( int_ack_o )
+    .int_ack_i ( int_ack_i )
   );
 
 

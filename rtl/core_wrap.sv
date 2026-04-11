@@ -4,6 +4,7 @@
 //
 // Authors:
 // - Philippe Sauter <phsauter@iis.ee.ethz.ch>
+// - Magna Mishra < added extra interrupt for Wakelet >
 //
 // This module wraps the processor core and adapts it to the Croc SoC interface.
 // The default core is CVE2 (https://github.com/openhwgroup/cve2).
@@ -47,6 +48,7 @@ module core_wrap import croc_pkg::*; #() (
   input logic [15:0] irqs_i,
   input logic timer_irq_i,
   input logic software_irq_i,
+  input logic ext_irq_i,
 
   input  logic [31:0] boot_addr_i,
 
@@ -160,7 +162,7 @@ module core_wrap import croc_pkg::*; #() (
     // Interrupts
     .irq_software_i      ( software_irq_i ),
     .irq_timer_i         ( timer_irq_i    ),
-    .irq_external_i      ( 1'b0           ),
+    .irq_external_i      ( ext_irq_i      ),
     .irq_fast_i          ( irqs_i         ),
     .irq_nm_i            ( 1'b0           ),
     .irq_pending_o       (),
