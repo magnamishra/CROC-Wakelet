@@ -24,7 +24,7 @@ dependencies:
   idma:                 { git: "https://github.com/pulp-platform/idma.git",                 rev: "__deploy__e618e4d__master" } # master with generated files
   cve2:                 { path: "rtl/cve2" } # a vendor package (no Bender.yml), see below 
   axi_obi:              { git: "https://github.com/pulp-platform/axi_obi.git",              version: 0.1.0}
-  wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev:    7ae7446} #wakelet with ASIC dependacy removed
+  wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev:    8e1bce8} #wakelet with ASIC dependacy removed
   axi:                  { git: "https://github.com/pulp-platform/axi.git",          version: 0.39.8 }
 
 sources:
@@ -223,7 +223,7 @@ vendor_package:
 
   - name: wakelet
     target_dir: rtl/wakelet
-    upstream: { git: "https://github.com/magnamishra/wakelet.git", rev: "7ae744686fd8f67f33d2814976b1532e3439927d" }
+    upstream: { git: "https://github.com/magnamishra/wakelet.git", rev: "8e1bce83d1ab1e27fd992b3626d60989e9541e3b" }
     patch_dir: "rtl/.patches/wakelet"
     mapping:
       - { from: 'hw/wl_pkg.sv',          to: 'wl_pkg.sv',          patch_dir: 'hw/' }
