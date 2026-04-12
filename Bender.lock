@@ -16,10 +16,10 @@ packages:
     - common_verification
     - tech_cells_generic
   axi_obi:
-    revision: 84f21a6524bedcf17a569a62ac01b8a5610819c8
-    version: 0.1.0
+    revision: null
+    version: null
     source:
-      Git: https://github.com/pulp-platform/axi_obi.git
+      Path: rtl/axi_obi
     dependencies:
     - axi
     - common_cells
@@ -209,7 +209,7 @@ packages:
     dependencies:
     - common_verification
   wakelet:
-    revision: 7ae744686fd8f67f33d2814976b1532e3439927d
+    revision: 207e008d4b22e272773c005519c49b9c68245100
     version: null
     source:
       Git: https://github.com/magnamishra/wakelet.git
