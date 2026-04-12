@@ -84,10 +84,11 @@ generate_rtl_flist() {
     run_cmd "sed -i '/axi_test.sv/d' compile_rtl.tcl"
 
     run_cmd "echo [INFO][Bender] Use vendored axi_obi"
-    run_cmd "sed -i 's|\$ROOT/.bender/git/checkouts/axi_obi-7b5474ddc0a2b9f4/src/|\$ROOT/rtl/axi_obi/|g' compile_rtl.tcl"
+    run_cmd "sed -i 's|\$ROOT/rtl/axi_obi/src/|\$ROOT/rtl/axi_obi/|g' compile_rtl.tcl"
+    run_cmd  "sed -i 's|\$ROOT/.bender/git/checkouts/axi_obi-.*/src/|\$ROOT/rtl/axi_obi/|g' compile_rtl.tcl"
 
     run_cmd "echo [INFO][Bender] Use vendored wakelet"
-    run_cmd "sed -i 's|\$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/|\$ROOT/rtl/wakelet/|g' compile_rtl.tcl"
+    run_cmd "sed -i 's|\$ROOT/.bender/git/checkouts/wakelet-*/hw/|\$ROOT/rtl/wakelet/|g' compile_rtl.tcl"
 
     run_cmd "echo [INFO][Bender] File list generated: compile_rtl.tcl"
 

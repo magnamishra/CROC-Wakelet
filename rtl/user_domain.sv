@@ -33,7 +33,7 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
   output logic [NumExternalIrqs-1:0] interrupts_o,    // interrupts to core
 
   //interrupt from Wakelet to drive to sleep 
-  inout logic int_io,
+  inout wire int_io,
   //acknowledgment to wakelet for sleep 
   input logic int_ack_i,
   input logic wakeup_i
@@ -234,7 +234,7 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
     .axi_wide_slv_rsp_o  (                ),
 
     .int_io ( int_io ),
-    .int_ack_i ( int_ack_i )
+    .int_ack_i ( int_ack_o )
   );
 
 

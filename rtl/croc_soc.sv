@@ -52,7 +52,7 @@ localparam int unsigned NumExternalIrqs = 4;
 logic [NumExternalIrqs-1:0] interrupts;
 logic [      GpioCount-1:0] gpio_in_sync;
 
-logic int_io;
+wire int_io;
 logic int_ack_o;
 
 croc_domain #(
@@ -111,7 +111,7 @@ user_domain #(
   .interrupts_o   ( interrupts   ),
 
   .int_io ( int_io ),
-  .int_ack_o (int_ack_o ),
+  .int_ack_i (int_ack_o ),
   .wakeup_i   (  wakeup  )
 );
 

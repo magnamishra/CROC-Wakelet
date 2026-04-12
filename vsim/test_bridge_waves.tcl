@@ -10,6 +10,13 @@ add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/bus_instr_mem_r_valid
 add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/instr_mem_muxed_r_en
 add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/i_instr_mem/r_valid_o
 add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/i_instr_mem/r_en_i
-
-run 5ms
+add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/core_data_req
+add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/core_instr_addr
+add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/i_wl_ipc/int_pending_d
+add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/i_wl_ipc/int_pending_q
+add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/irq_i
+add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/core_data_demux_ipc_req
+add wave /tb_croc_soc/int_io_obs
+add wave /tb_croc_soc/wakeup_obs
+run 25ms
 wave zoom full

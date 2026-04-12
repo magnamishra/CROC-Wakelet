@@ -1,0 +1,93 @@
+// Copyright 2025 ETH Zurich and University of Bologna.
+// Solderpad Hardware License, Version 0.51, see LICENSE for details.
+// SPDX-License-Identifier: SHL-0.51
+//
+// Authors:
+// - Magna Mishra < implemnt meip to wakelet >
+
+
+///  REGISTER MAP
+///  -------------------------------------------
+///   Offset | Description
+///  --------|----------------------------------
+///   0x0000 | WAKEUP_TRIG - CROC writes 1 to assert wakeup to Snitch
+///   0x0004 | reserved
+///   0x0008 | reserved
+///   0x000C | reserved
+
+`include "common_cells/registers.svh"
+
+module croc_wakelet_up #(
+  parameter type obi_req_t = logic,
+  parameter type obi_rsp_t = logic
+) (
+  input  logic     clk_i,
+  input  logic     rst_ni,
+  input  obi_req_t obi_req_i,
+  output obi_rsp_t obi_rsp_o,
+  // int_io from Wakelet ? de-asserts wakeup when Snitch is up
+  input  logic     int_io,
+  // direct wire to wl_top.irq_i
+  output logic     wakeup_o
+);
+  import croc_wakelet_up_pkg::*;
+  import croc_pkg::*;
+
+  // wakeup pending register
+  logic wakeup_d, wakeup_q;
+  assign wakeup_o = wakeup_q;
+
+  // OBI A-phase fields needed in R-phase
+  logic                              req_q;
+  logic                              we_q;
+  logic [$bits(obi_req_i.a.aid)-1:0] id_q;
+  logic [IntAddrWidth-1:2]           addr_q;
+
+  `FF(req_q,  obi_req_i.req,                      '0, clk_i, rst_ni)
+  `FF(we_q,   obi_req_i.a.we,                     '0, clk_i, rst_ni)
+  `FF(id_q,   obi_req_i.a.aid,                    '0, clk_i, rst_ni)
+  `FF(addr_q, obi_req_i.a.addr[IntAddrWidth-1:2], '0, clk_i, rst_ni)
+
+  // byte enable mask
+  logic [31:0] be_mask;
+  for (genvar i = 0; unsigned'(i) < 32/8; ++i) begin : gen_write_mask
+    assign be_mask[8*i +: 8] = {8{obi_req_i.a.be[i]}};
+  end
+
+  always_ff @(posedge clk_i or negedge rst_ni) begin
+    if (!rst_ni) wakeup_q <= 1'b0;
+    else         wakeup_q <= wakeup_d;
+  end
+
+  always_comb begin : write_fsm
+     // de-assert first (lower priority)
+      wakeup_d = 1'b0;
+
+    // CROC assert wins (higher priority ? last assignment)
+    if (obi_req_i.req && obi_req_i.a.we) begin
+      unique case ({obi_req_i.a.addr[IntAddrWidth-1:2], 2'b00})
+        32'h0:   wakeup_d = obi_req_i.a.wdata[0] & be_mask[0];
+        default: ;
+      endcase
+    end
+  end
+
+  // OBI response
+  always_comb begin : obi_response
+    obi_rsp_o        = '0;
+    obi_rsp_o.gnt    = 1'b1;
+    obi_rsp_o.rvalid = req_q;
+    obi_rsp_o.r.rid  = id_q;
+
+    if (req_q && !we_q) begin
+      unique case ({addr_q, 2'b00})
+        32'h0:   obi_rsp_o.r.rdata = {31'h0, wakeup_q};
+        default: begin
+          obi_rsp_o.r.rdata = 32'hBADCAB1E;
+          obi_rsp_o.r.err   = 1'b1;
+        end
+      endcase
+    end
+  end
+
+endmodule

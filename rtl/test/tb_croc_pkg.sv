@@ -5,6 +5,7 @@
 // Authors:
 // - Philippe Sauter <phsauter@iis.ee.ethz.ch>
 // - Enrico Zelioli <ezelioli@iis.ee.ethz.ch>
+// - Magna Mishra  < add CLINT address to reference Wakelet > 
 
 package tb_croc_pkg;
 
@@ -32,5 +33,6 @@ package tb_croc_pkg;
 
   // CLINT base address (msip register is at offset 0)
   localparam bit [31:0] ClintBaseAddr   = croc_pkg::get_periph_start_addr(croc_pkg::PeriphClint);
+  localparam bit [31:0] WakeletUpBaseAddr = croc_pkg::get_periph_start_addr(croc_pkg::PeriphWakeletUp);
 
 endpackage

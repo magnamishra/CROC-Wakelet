@@ -35,6 +35,15 @@ module tb_croc_soc #(
   logic [GpioCount-1:0] gpio_out;
   logic [GpioCount-1:0] gpio_out_en;
 
+  // Observe interrupt signals via hierarchical references
+  logic int_io_obs;
+  logic int_ack_obs;
+  logic wakeup_obs;
+
+  assign int_io_obs   = i_croc_soc.int_io;
+  assign int_ack_obs  = i_croc_soc.int_ack_o;
+  assign wakeup_obs   = i_croc_soc.wakeup;
+
   // Signals controlled by the testbench
 
   /////////////////////////////
@@ -164,11 +173,39 @@ module tb_croc_soc #(
       $fatal(1, "Wakelet addressability test failed");
     end
 
-    // finish simulation
+  // ------------------------------------------------------------------
+  // IPC Interrupt test
+  // ------------------------------------------------------------------
+
+  // Load Wakelet test_ipc binary into Wakelet instruction memory
+  $display("@%t | [WAKELET] Loading test_ipc binary", $time);
+  i_vip.jtag_load_hex("/scratch/sem26f26/Evaluating_protocols_on_CROC_Soc/wakelet/sw/apps/test_ipc.instr_mem.hex");
+
+  // Load Wakelet test_ipc data into Wakelet data memory
+  //i_vip.jtag_load_hex("../../../../../../wakelet/sw/apps/test_ipc.data_mem.hex");
+
+  // Wake Snitch via croc_wakelet_up
+  $display("@%t | [WAKELET] Waking Snitch via croc_wakelet_up", $time);
+  i_vip.jtag_write_reg32(WakeletUpBaseAddr, 32'h1);
+
+  // Wait for int_io to go low with timeout
+  $display("@%t | [WAKELET] Waiting for int_io to assert...", $time);
+  fork
+    @(negedge int_io_obs);
+    begin
+        #18ms;
+        $fatal(1, "@%t | [WAKELET] TIMEOUT - int_io never asserted!", $time);
+    end
+  join_any
+  disable fork;
+  $display("@%t | [WAKELET] int_io asserted - IPC interrupt test PASSED", $time);
+
+  // finish simulation
     repeat(50) @(posedge sys_clk);
     $finish();
-  end
-
+  
+  end 
+  
   ////////////////
   //  Waveform  //
   ////////////////
