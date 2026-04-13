@@ -83,13 +83,6 @@ generate_rtl_flist() {
     run_cmd "echo [INFO][Bender] Remove axi_test.sv missing rand_id_queue_pkg dependency"
     run_cmd "sed -i '/axi_test.sv/d' compile_rtl.tcl"
 
-    run_cmd "echo [INFO][Bender] Use vendored axi_obi"
-    run_cmd "sed -i 's|\$ROOT/rtl/axi_obi/src/|\$ROOT/rtl/axi_obi/|g' compile_rtl.tcl"
-    run_cmd  "sed -i 's|\$ROOT/.bender/git/checkouts/axi_obi-.*/src/|\$ROOT/rtl/axi_obi/|g' compile_rtl.tcl"
-
-    run_cmd "echo [INFO][Bender] Use vendored wakelet"
-    run_cmd "sed -i 's|\$ROOT/.bender/git/checkouts/wakelet-*/hw/|\$ROOT/rtl/wakelet/|g' compile_rtl.tcl"
-
     run_cmd "echo [INFO][Bender] File list generated: compile_rtl.tcl"
 
 
