@@ -8,7 +8,7 @@ package:
     - "Philippe Sauter <phsauter@iis.ee.ethz.ch>"
     - "Magna Mishra    <mishram@ethz.ch>"
     # IMPORTANT: New dependancies added for Wakelet integration 
-    # IMPORTANT: axi_obi added as vendor package to fix .user field issue 
+    # IMPORTANT: Remove axi_obi and wakelet from vendor package, use forked repo only
     # Refer to READ.ME for details on changes 
 
 
@@ -23,7 +23,7 @@ dependencies:
   obi_peripherals:      { git: "https://github.com/pulp-platform/obi_peripherals.git",      rev: 21ee04d    } # UART
   idma:                 { git: "https://github.com/pulp-platform/idma.git",                 rev: "__deploy__e618e4d__master" } # master with generated files
   cve2:                 { path: "rtl/cve2" } # a vendor package (no Bender.yml), see below 
-  axi_obi:              { git: "https://github.com/pulp-platform/axi_obi.git",              version: 0.1.0}
+  axi_obi:              { git: "https://github.com/magnamishra/axi_obi.git",              version: ee3e0a9}
   wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev:   207e008} #wakelet with ASIC dependacy removed
 
 sources:
@@ -164,78 +164,3 @@ vendor_package:
       - { from: 'Bender.yml', to: 'Bender.yml',   patch_dir: '' }
       - { from: 'README.md', to: 'README.md',   patch_dir: '' }
       - { from: 'CHANGELOG.md', to: 'CHANGELOG.md',   patch_dir: '' }
-
-
-  ###############
-  # peripherals #
-  ###############
-  - name: riscv-dbg
-    target_dir: rtl/riscv-dbg
-    upstream: { git: "https://github.com/pulp-platform/riscv-dbg.git", rev: "13835b1d45f013a0760ecebd744fee6cf2e3b96a" } # branch verilator-phsauter
-    patch_dir: "rtl/.patches/riscv-dbg"
-    mapping:
-      - { from: 'src/',                               to: '',                                   patch_dir: 'src/' }
-      - { from: 'debug_rom/debug_rom.sv',             to: 'debug_rom/debug_rom.sv',             patch_dir: 'debug_rom/' }
-      - { from: 'debug_rom/debug_rom_one_scratch.sv', to: 'debug_rom/debug_rom_one_scratch.sv', patch_dir: 'debug_rom/' }
-      - { from: 'tb/jtag_dmi/jtag_test_simple.sv',    to: 'tb/jtag_test_simple.sv',             patch_dir: 'tb/' }
-      - { from: 'Bender.yml',                         to: 'Bender.yml',                         patch_dir: '' }
-      - { from: 'README.md',                          to: 'README.md',                          patch_dir: '' }
-
-
-  - name: obi_peripherals
-    target_dir: rtl/obi_uart
-    upstream: { git: "https://github.com/pulp-platform/obi_peripherals.git", rev: "21ee04d267025f6ea3d2faa462272287ddcb9bbb"  } # newest
-    patch_dir: "rtl/.patches/obi_uart"
-    mapping:
-      - { from: 'hw/obi_uart/', to: '',            patch_dir: 'hw/' }
-      - { from: 'Bender.yml',   to: 'Bender.yml',  patch_dir: '' }
-
-
-  #########
-  # core  #
-  #########
-  # CVE2
-  - name: cve2
-    target_dir: rtl/cve2
-    upstream: { git: "https://github.com/openhwgroup/cve2.git", rev: "53076d64c97685b1d2f5d07cd7f5cc439cf1f351" } # newest
-    patch_dir: "rtl/.patches/cve2"
-    mapping:
-      - { from: 'rtl/',                                            to: '',                      patch_dir: 'rtl/' }
-      - { from: 'README.md',                                       to: 'README.md',             patch_dir: '' }
-      - { from: 'doc/03_reference/images/blockdiagram.drawio.svg', to: 'blockdiagram.svg',      patch_dir: '' }
-
-  ##########
-  # axi_obi #
-  ##########
-  - name: axi_obi
-    target_dir: rtl/axi_obi
-    upstream: { git: "https://github.com/pulp-platform/axi_obi.git", rev: "84f21a6524bedcf17a569a62ac01b8a5610819c8" }
-    patch_dir: "rtl/.patches/axi_obi"
-    mapping:
-      - { from: 'src/axi_to_detailed_mem_user.sv', to: 'axi_to_detailed_mem_user.sv', patch_dir: '' }
-      - { from: 'src/axi_to_obi.sv',               to: 'axi_to_obi.sv',               patch_dir: '' }
-      - { from: 'src/obi_to_axi.sv',               to: 'obi_to_axi.sv',               patch_dir: '' }
-      - { from: 'Bender.yml',                       to: 'Bender.yml',                  patch_dir: '' }
-
- ###########
- # wakelet #
- ###########
-
-  - name: wakelet
-    target_dir: rtl/wakelet
-    upstream: { git: "https://github.com/magnamishra/wakelet.git", rev: "207e008d4b22e272773c005519c49b9c68245100" }
-    patch_dir: "rtl/.patches/wakelet"
-    mapping:
-      - { from: 'hw/wl_pkg.sv',          to: 'wl_pkg.sv',          patch_dir: 'hw/' }
-      - { from: 'hw/snitch_bootrom.sv',  to: 'snitch_bootrom.sv',  patch_dir: 'hw/' }
-      - { from: 'hw/core_instr_mem.sv',  to: 'core_instr_mem.sv',  patch_dir: 'hw/' }
-      - { from: 'hw/core_instr_demux.sv',to: 'core_instr_demux.sv',patch_dir: 'hw/' }
-      - { from: 'hw/core_data_mem.sv',   to: 'core_data_mem.sv',   patch_dir: 'hw/' }
-      - { from: 'hw/core_data_demux.sv', to: 'core_data_demux.sv', patch_dir: 'hw/' }
-      - { from: 'hw/core_subsystem.sv',  to: 'core_subsystem.sv',  patch_dir: 'hw/' }
-      - { from: 'hw/wl_registers.sv',    to: 'wl_registers.sv',    patch_dir: 'hw/' }
-      - { from: 'hw/wl_ipc.sv',          to: 'wl_ipc.sv',          patch_dir: 'hw/' }
-      - { from: 'hw/adapter_axi2hci.sv', to: 'adapter_axi2hci.sv', patch_dir: 'hw/' }
-      - { from: 'hw/hwpe_subsystem.sv',  to: 'hwpe_subsystem.sv',  patch_dir: 'hw/' }
-      - { from: 'hw/wl_top.sv',          to: 'wl_top.sv',          patch_dir: 'hw/' }
-      - { from: 'Bender.yml',            to: 'Bender.yml',          patch_dir: '' }
