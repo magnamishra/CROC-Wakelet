@@ -32,18 +32,14 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
   input  logic [      GpioCount-1:0] gpio_in_sync_i, // synchronized GPIO inputs
   output logic [NumExternalIrqs-1:0] interrupts_o,    // interrupts to core
 
-  //interrupt from Wakelet to drive to sleep 
-  inout wire int_io,
-  //acknowledgment to wakelet for sleep 
-  input logic int_ack_i,
-  input logic wakeup_i
+  //trigger snitch core 
+  input logic wakeup_i,
+
+  //recieve wakelet done acknowledgement from wakelet_done_o
+  output logic ext_irq_o
 
 );
 
-  ///Wakelet interrupt gets tied off here 
-
-  //CPU expects active high, hence the inversion
-  // changed here -> no fast interrupts. this is now meip for CROC. 
   assign interrupts_o[0] = '0;
   assign interrupts_o[NumExternalIrqs-1:1] = '0;
 
@@ -227,14 +223,14 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
     ///TO DO: Integrate interrupts and AXI slaves 
     .irq_i              (       wakeup_i      ),
     // End of computation and return value
+    .int_trig_o         (                     ),
+    .wakelet_done_o     (        ext_irq_o    ), 
+
     .eoc_o              (                 ),
 
     // AXI wide interface (slave port), for sensors
     .axi_wide_slv_req_i  (                ),
-    .axi_wide_slv_rsp_o  (                ),
-
-    .int_io ( int_io ),
-    .int_ack_i ( int_ack_o )
+    .axi_wide_slv_rsp_o  (                )
   );
 
 

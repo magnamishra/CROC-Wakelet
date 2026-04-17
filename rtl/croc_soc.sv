@@ -51,9 +51,7 @@ mgr_obi_rsp_t user_mgr_obi_rsp;
 localparam int unsigned NumExternalIrqs = 4;
 logic [NumExternalIrqs-1:0] interrupts;
 logic [      GpioCount-1:0] gpio_in_sync;
-
-wire int_io;
-logic int_ack_o;
+logic ext_irq_i; // Wakelet done from user domain flows here 
 
 croc_domain #(
   .GpioCount       ( GpioCount       ),
@@ -87,9 +85,8 @@ croc_domain #(
 
   .interrupts_i ( interrupts ),
   .core_busy_o  ( status_o   ),
-  .ext_irq_i    ( int_io     ),
-  .int_ack_o   ( int_ack_o  ),
-  .wakeup_o    (  wakeup    )
+  .ext_irq_i    ( ext_irq_i  ),
+  .wakeup_o     (  wakeup    )
 );
 
 user_domain #(
@@ -110,8 +107,8 @@ user_domain #(
   .gpio_in_sync_i ( gpio_in_sync ),
   .interrupts_o   ( interrupts   ),
 
-  .int_io ( int_io ),
-  .int_ack_i (int_ack_o ),
+  .ext_irq_o      (  ext_irq_i   ), 
+
   .wakeup_i   (  wakeup  )
 );
 

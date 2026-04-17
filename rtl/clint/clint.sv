@@ -15,8 +15,8 @@ module clint #(
   input  logic     rst_ni,
   input  logic     rtc_i,
   output logic     software_irq_o,
-  output logic     timer_irq_o,
-  output logic msip_o,          // new : expose for int_ack to wakelet
+  output logic     timer_irq_o,     
+  output logic     wakeup_o, // new : expose for int_ack to wakelet
   input  obi_req_t obi_req_i,
   output obi_rsp_t obi_rsp_o
 );
@@ -27,6 +27,7 @@ module clint #(
   logic [63:0]    mtime_d,    mtime_q;
   logic [63:0] mtimecmp_d, mtimecmp_q;
   logic            msip_d,     msip_q;
+  logic            wakeup_d, wakeup_q;
 
   // Internal registers
   logic            rtc_sync_d, rtc_sync_q;
@@ -45,8 +46,9 @@ module clint #(
 
   // Interrupt generation
   assign software_irq_o = msip_q;
-  assign msip_o         = msip_q; // new : same signal, software and Wakelet both get the value
   assign timer_irq_o    = (mtime_q >= mtimecmp_q) ? 1'b1 : 1'b0;
+  assign wakeup_o = wakeup_q; // new wakelet wakeup interrupt 
+
 
   // Rising edge detection
   assign increase_mtime = rtc_sync_d & ~rtc_sync_q;
@@ -83,11 +85,15 @@ module clint #(
     err_d      = '0;
     mtimecmp_d = mtimecmp_q;
     msip_d     = msip_q;
+    wakeup_d   = 1'b0; //auto clear after 1 cycle 
 
     if (obi_req_i.req) begin
 
       if (obi_req_i.a.we) begin : write
         unique case ({obi_req_i.a.addr[IntAddrWidth-1:2], 2'b00})
+          CLINT_WAKEUP_TRIG_OFFSET: begin
+            wakeup_d = obi_req_i.a.wdata[0] & be_mask[0];
+          end 
           CLINT_MSIP_OFFSET: begin
             msip_d = (msip_q & ~be_mask[0]) | (obi_req_i.a.wdata[0] & be_mask[0]);
           end
@@ -104,6 +110,9 @@ module clint #(
 
       end else begin : read
         unique case ({obi_req_i.a.addr[IntAddrWidth-1:2], 2'b00})
+          CLINT_WAKEUP_TRIG_OFFSET: begin
+            rdata_d = {31'd0, wakeup_q};
+          end
           CLINT_MSIP_OFFSET: begin
             rdata_d = {31'h0, msip_q};
           end
@@ -134,6 +143,7 @@ module clint #(
       mtime_q    <= '0;
       mtimecmp_q <= '0;
       msip_q     <= '0;
+      wakeup_q   <= '0; 
       obi_req_q  <= '0;
       rdata_q    <= '0;
       err_q      <= '0;
@@ -141,6 +151,7 @@ module clint #(
     end else begin
       mtime_q    <= mtime_d;
       mtimecmp_q <= mtimecmp_d;
+      wakeup_q   <= wakeup_d; 
       msip_q     <= msip_d;
       obi_req_q  <= obi_req_d;
       rdata_q    <= rdata_d;

@@ -4,6 +4,7 @@
 //
 // Authors:
 // - Enrico Zelioli <ezelioli@iis.ee.ethz.ch>
+// - Magna Mishra   <integrate new register for wakelet wakeup trigger> 
 
 package clint_reg_pkg;
 
@@ -13,6 +14,7 @@ package clint_reg_pkg;
 
   // Register offsets
   parameter logic [IntAddrWidth-1:0] CLINT_MSIP_OFFSET           = 16'h0000;
+  parameter logic [IntAddrWidth-1:0] CLINT_WAKEUP_TRIG_OFFSET    = 16'h0004;
   parameter logic [IntAddrWidth-1:0] CLINT_MTIMECMP_LOW0_OFFSET  = 16'h4000;
   parameter logic [IntAddrWidth-1:0] CLINT_MTIMECMP_HIGH0_OFFSET = 16'h4004;
   parameter logic [IntAddrWidth-1:0] CLINT_MTIME_LOW_OFFSET      = 16'hbff8;
