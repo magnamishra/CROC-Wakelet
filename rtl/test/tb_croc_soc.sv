@@ -198,6 +198,17 @@ module tb_croc_soc #(
   disable fork;
   $display("@%t | [WAKELET] WAKELET_DONE asserted - IPC interrupt test PASSED", $time);
 
+  // After WAKELET_DONE asserts, read INT_TRIG from CROC side
+  $display("@%t | [CROC] Reading INT_TRIG from Wakelet CSR...", $time);
+  i_vip.jtag_read_reg32(32'h2004_0004, tb_data);
+  $display("@%t | [CROC] INT_TRIG = 0x%h", $time, tb_data);
+
+  if (tb_data == 32'h1) begin
+  $display("@%t | [CROC] INT_TRIG read PASSED - Snitch is up!", $time);
+  end else begin
+  $display("@%t | [CROC] INT_TRIG read FAILED (got 0x%h)", $time, tb_data);
+  end
+
   // finish simulation
     repeat(50) @(posedge sys_clk);
     $finish();
