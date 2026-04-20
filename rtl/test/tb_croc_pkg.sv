@@ -33,6 +33,5 @@ package tb_croc_pkg;
 
   // CLINT base address (msip register is at offset 0)
   localparam bit [31:0] ClintBaseAddr   = croc_pkg::get_periph_start_addr(croc_pkg::PeriphClint);
-  localparam bit [31:0] WakeletUpBaseAddr = croc_pkg::get_periph_start_addr(croc_pkg::PeriphWakeletUp);
-
+  localparam bit [31:0] ClintWakeupAddr  = ClintBaseAddr + clint_reg_pkg::CLINT_WAKEUP_TRIG_OFFSET;
 endpackage

@@ -36,13 +36,11 @@ module tb_croc_soc #(
   logic [GpioCount-1:0] gpio_out_en;
 
   // Observe interrupt signals via hierarchical references
-  logic int_io_obs;
-  logic int_ack_obs;
   logic wakeup_obs;
+  logic wakelet_done_obs;
 
-  assign int_io_obs   = i_croc_soc.int_io;
-  assign int_ack_obs  = i_croc_soc.int_ack_o;
-  assign wakeup_obs   = i_croc_soc.wakeup;
+  assign wakeup_obs       = i_croc_soc.wakeup;
+  assign wakelet_done_obs = i_croc_soc.ext_irq_i; 
 
   // Signals controlled by the testbench
 
@@ -186,19 +184,19 @@ module tb_croc_soc #(
 
   // Wake Snitch via croc_wakelet_up
   $display("@%t | [WAKELET] Waking Snitch via croc_wakelet_up", $time);
-  i_vip.jtag_write_reg32(WakeletUpBaseAddr, 32'h1);
+  i_vip.jtag_write_reg32(ClintWakeupAddr, 32'h1);
 
   // Wait for int_io to go low with timeout
-  $display("@%t | [WAKELET] Waiting for int_io to assert...", $time);
+  $display("@%t | [WAKELET] Waiting for WAKELET_DONE to assert...", $time);
   fork
-    @(negedge int_io_obs);
+    @(posedge wakelet_done_obs);
     begin
         #18ms;
-        $fatal(1, "@%t | [WAKELET] TIMEOUT - int_io never asserted!", $time);
+        $fatal(1, "@%t | [WAKELET] TIMEOUT - WAKELET_DONE never asserted!", $time);
     end
   join_any
   disable fork;
-  $display("@%t | [WAKELET] int_io asserted - IPC interrupt test PASSED", $time);
+  $display("@%t | [WAKELET] WAKELET_DONE asserted - IPC interrupt test PASSED", $time);
 
   // finish simulation
     repeat(50) @(posedge sys_clk);

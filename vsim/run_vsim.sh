@@ -188,7 +188,7 @@ run_vsim_gui() {
         -suppress vsim-3009 \
         -suppress vsim-8683 \
         -suppress vsim-8386 \
-        -do \"do test_bridge_waves.tcl\""
+        -do \"do test_waves.tcl\""
 }
 
 
