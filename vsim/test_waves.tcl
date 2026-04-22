@@ -1,24 +1,5 @@
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/clk_i
-add wave /tb_croc_soc/i_croc_soc/i_user/i_OBI_Croc_AXILite_Wakelet/obi_req_i
-add wave /tb_croc_soc/i_croc_soc/i_user/i_OBI_Croc_AXILite_Wakelet/obi_rsp_o
-add wave /tb_croc_soc/i_croc_soc/i_user/i_OBI_Croc_AXILite_Wakelet/axi_req_o
-add wave /tb_croc_soc/i_croc_soc/i_user/i_OBI_Croc_AXILite_Wakelet/axi_rsp_i
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/axi_lite_slv_req_i
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/axi_lite_slv_rsp_o
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/bus_instr_mem_r_en
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/bus_instr_mem_r_valid
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/instr_mem_muxed_r_en
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/i_instr_mem/r_valid_o
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/i_instr_mem/r_en_i
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/irq_i
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/core_data_req
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/i_csrs/regfile_q
-add wave /tb_croc_soc/i_croc_soc/i_croc/i_clint/wakeup_q
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/core_data_req
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/core_instr_addr
-add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/irq_i
+add wave /tb_croc_soc/i_croc_soc/i_user/i_wakelet_user/i_core_subsystem/inst_addr_o
 add wave /tb_croc_soc/wakeup_obs
 add wave /tb_croc_soc/wakelet_done_obs
-add wave /tb_croc_soc/i_croc_soc/i_croc/ext_irq_i
 run 25ms
 wave zoom full

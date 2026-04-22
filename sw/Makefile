@@ -74,6 +74,53 @@ $(GEN_CONFIG_OUT): $(GEN_CONFIG_DEPS) $(GEN_CONFIG_SCRIPT)
 
 #end of change 
 
+# ==================================================================
+# Snitch workload build (separate ISA target: rv32i, no C extension)
+# ==================================================================
+SNITCH_DIR     ?= snitch
+SNITCH_CC      := $(RISCV_PREFIX)gcc
+SNITCH_MARCH   := rv32i
+SNITCH_MABI    := ilp32
+SNITCH_LINK    := $(SNITCH_DIR)/snitch_imem.ld
+SNITCH_FLAGS   := -march=$(SNITCH_MARCH) -mabi=$(SNITCH_MABI) \
+                  -nostdlib -nostartfiles -fno-builtin -ffreestanding \
+                  -static -std=gnu99 -O1 -fno-builtin
+SNITCH_SOURCES := $(wildcard $(SNITCH_DIR)/*.c)
+SNITCH_NAMES   := $(basename $(SNITCH_SOURCES))
+SNITCH_ELFS    := $(SNITCH_NAMES:%=$(BINDIR)/%.elf)
+SNITCH_DUMPS   := $(SNITCH_NAMES:%=$(BINDIR)/%.dump)
+SNITCH_BINS    := $(SNITCH_NAMES:%=$(BINDIR)/%.bin)
+SNITCH_HEXS    := $(SNITCH_NAMES:%=$(BINDIR)/%.hex)
+
+$(BUILDDIR)/$(SNITCH_DIR)/%.o: $(SNITCH_DIR)/%.c
+	mkdir -p $(dir $@)
+	$(SNITCH_CC) $(SNITCH_FLAGS) -MMD -MP -c $< -o $@
+
+$(BINDIR)/$(SNITCH_DIR)/%.elf: $(BUILDDIR)/$(SNITCH_DIR)/%.o $(SNITCH_LINK)
+	mkdir -p $(dir $@)
+	$(SNITCH_CC) $(SNITCH_FLAGS) -T$(SNITCH_LINK) -o $@ $<
+
+$(BINDIR)/$(SNITCH_DIR)/%.dump: $(BINDIR)/$(SNITCH_DIR)/%.elf
+	mkdir -p $(dir $@)
+	$(RISCV_OBJDUMP) -D -s $< > $@
+
+$(BINDIR)/$(SNITCH_DIR)/%.bin: $(BINDIR)/$(SNITCH_DIR)/%.elf
+	mkdir -p $(dir $@)
+	$(RISCV_OBJCOPY) -O binary --only-section=.text $< $@
+	@echo "Snitch binary size: $$(wc -c < $@) bytes (max 512)"
+	@[ $$(wc -c < $@) -le 512 ] || (echo "ERROR: Snitch binary exceeds 512B IMEM limit" && exit 1)
+
+$(BINDIR)/$(SNITCH_DIR)/%.hex: $(BINDIR)/$(SNITCH_DIR)/%.elf
+	mkdir -p $(dir $@)
+	$(RISCV_OBJCOPY) -O verilog \
+	    --only-section=.text \
+	    --change-section-address .text=0x20010000 \
+	    $< $@
+
+SNITCH_TARGETS := $(SNITCH_ELFS) $(SNITCH_DUMPS) $(SNITCH_BINS) $(SNITCH_HEXS)
+# ==================================================================
+
+snitch: $(BINDIR) $(BUILDDIR) $(SNITCH_TARGETS)
 
 all: compile
 

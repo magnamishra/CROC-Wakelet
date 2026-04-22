@@ -192,14 +192,21 @@ overrides:
 bender checkout
 ```
 
-3. **Compile and simulate**:
+3. **Compile and simulate**: 
+Updated test for CVE2 to Snitch binary trasfer (testbench driven and dummy data mover workload)
+From the project root 
 ```sh
-oseda bash
+/usr/pack/riscv-1.0-kgf/STARTUP/riscv -riscv64-gcc-14.2.0 bash
 cd sw
-make all 
-cd vsim && ./run_vsim.sh --flist --build --run-gui ../sw/bin/test/test_bridge.hex
+make clean
+make snitch 
+make compile 
+exit 
+cd vsim && ./run_vsim.sh --flist --build --run-gui ../sw/bin/test/test_wakelet.hex
 
---flist needs to be executed only once while the RTL is compiled for the first time. Subsequent runs will work with ./run_vsim.sh --build --run-gui ../sw/bin/test/test_bridge.hex
+--flist needs to be executed only once while the RTL is compiled for the first time. Subsequent runs will work with ./run_vsim.sh --build --run-gui ../sw/bin/test/test_name.hex
+
+Note: Do not run make all from sw inside oseda bash container for this test 
 ```
 
 ### Fixes and Patches
