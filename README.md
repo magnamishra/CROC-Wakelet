@@ -193,7 +193,7 @@ bender checkout
 ```
 
 3. **Compile and simulate**: 
-Updated test for CVE2 to Snitch binary trasfer (testbench driven and dummy data mover workload)
+Updated test for CVE2 to Snitch binary trasfer via firmware
 From the project root 
 ```sh
 /usr/pack/riscv-1.0-kgf/STARTUP/riscv -riscv64-gcc-14.2.0 bash

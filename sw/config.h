@@ -17,7 +17,7 @@
 #define OBI_TIMER_BASE_ADDR 0x0300A000
 #define IDMA_BASE_ADDR      0x0300B000
 #define USER_ROM_BASE_ADDR  0x20000000
-
+#define CLINT_WAKEUP_TRIG_OFFSET 0x0004
 
 //gen_config handles this and adds everything 
 //localparam logic [31:0] WakeletImemAddr = croc_pkg::UserBaseAddr + wl_pkg::InstrMemBaseAddr;

@@ -157,128 +157,35 @@ module tb_croc_soc #(
     $display("@%t | [CORE] Wait for end of code...", $time);
     i_vip.jtag_wait_for_eoc(tb_data);
 
-
     // ------------------------------------------------------------------
-    // Wakelet addressability test result
-    // tb_data holds the return value of main() in test_bridge.c:
-    //   0  = all tests passed
-    //   !0 = the ID of the first failing test (see test_bridge.c)
+    // Wakelet binary offload test
+    // CVE2 firmware owns: binary load, DMEM init, Snitch wakeup
     // ------------------------------------------------------------------
-    //if (tb_data == 0) begin
-    //  $display("@%t | [WAKELET] Addressability test PASSED", $time);
-    //end else begin
-    //  $display("@%t | [WAKELET] Addressability test FAILED (test id: %0d)", $time, tb_data);
-    //  $fatal(1, "Wakelet addressability test failed");
-    //end
 
-  // ------------------------------------------------------------------
-  // IPC Interrupt test
-  // ------------------------------------------------------------------
-
-  // Load Wakelet test_ipc binary into Wakelet instruction memory
-  //$display("@%t | [WAKELET] Loading test_ipc binary", $time);
-  //i_vip.jtag_load_hex("/scratch/sem26f26/Evaluating_protocols_on_CROC_Soc/wakelet/sw/apps/test_ipc.instr_mem.hex");
-
-  // Load Wakelet test_ipc data into Wakelet data memory
-  //i_vip.jtag_load_hex("../../../../../../wakelet/sw/apps/test_ipc.data_mem.hex");
-
-  // Wake Snitch via croc_wakelet_up
-  //$display("@%t | [WAKELET] Waking Snitch via croc_wakelet_up", $time);
-  //i_vip.jtag_write_reg32(ClintWakeupAddr, 32'h1);
-
-  // Wait for int_io to go low with timeout
-  // $display("@%t | [WAKELET] Waiting for WAKELET_DONE to assert...", $time);
-  //fork
-  //  @(posedge wakelet_done_obs);
-  // begin
-  //     #18ms;
-  //     $fatal(1, "@%t | [WAKELET] TIMEOUT - WAKELET_DONE never asserted!", $time);
-  //  end
-  //join_any
-  //disable fork;
-  //$display("@%t | [WAKELET] WAKELET_DONE asserted - IPC interrupt test PASSED", $time);
-
-  // After WAKELET_DONE asserts, read INT_TRIG from CROC side
-  //$display("@%t | [CROC] Reading INT_TRIG from Wakelet CSR...", $time);
-  //i_vip.jtag_read_reg32(32'h2004_0004, tb_data);
-  //$display("@%t | [CROC] INT_TRIG = 0x%h", $time, tb_data);
-
-  //if (tb_data == 32'h1) begin
-  //$display("@%t | [CROC] INT_TRIG read PASSED - Snitch is up!", $time);
-  //end else begin
-  //$display("@%t | [CROC] INT_TRIG read FAILED (got 0x%h)", $time, tb_data);
-  //end
-
-  // Wakelet binary offload test
-
-    // Step 1  Load Snitch workload into Wakelet IMEM at 0x2001_0000
-    $display("@%t | [WAKELET] Loading snitch_workload into IMEM", $time);
-    i_vip.jtag_load_hex("/scratch/sem26f26/Evaluating_protocols_on_CROC_Soc/croc-wakelet/sw/bin/snitch/snitch_workload.hex");
-
-    // Verify IMEM contents after load
-    $display("@%t | [WAKELET] Verifying IMEM contents...", $time);
-    i_vip.jtag_read_reg32(32'h2001_0000, tb_data);
-    $display("@%t | [WAKELET] IMEM[0] = 0x%h (expected 0x00010117)", $time, tb_data);
-    i_vip.jtag_read_reg32(32'h2001_0004, tb_data);
-    $display("@%t | [WAKELET] IMEM[1] = 0x%h (expected 0x20010113)", $time, tb_data);
-    i_vip.jtag_read_reg32(32'h2001_0008, tb_data);
-    $display("@%t | [WAKELET] IMEM[2] = 0x%h (expected 0x000207b7)", $time, tb_data);
-
-
-    i_vip.jtag_read_reg32(32'h2001_0000, tb_data);
-    $display("IMEM[0x000] = 0x%h", tb_data);
-    i_vip.jtag_read_reg32(32'h2001_0004, tb_data);
-    $display("IMEM[0x004] = 0x%h", tb_data);
-    i_vip.jtag_read_reg32(32'h2001_0008, tb_data);
-    $display("IMEM[0x008] = 0x%h", tb_data);
-    i_vip.jtag_read_reg32(32'h2001_000c, tb_data);
-    $display("IMEM[0x00c] = 0x%h", tb_data);
-
-    // Step 2  Pre-load source buffer in Snitch DMEM with known data
-
-    $display("@%t | [WAKELET] Pre-loading DMEM source buffer", $time);
-    i_vip.jtag_write_reg32(32'h2002_0000, 32'hDEADBEEF, 1'b0);
-    i_vip.jtag_write_reg32(32'h2002_0004, 32'hCAFEBABE, 1'b0);
-    i_vip.jtag_write_reg32(32'h2002_0008, 32'h12345678, 1'b0);
-    i_vip.jtag_write_reg32(32'h2002_000C, 32'hABCDABCD, 1'b0);
-    i_vip.jtag_write_reg32(32'h2002_0010, 32'h11111111, 1'b0);
-    i_vip.jtag_write_reg32(32'h2002_0014, 32'h22222222, 1'b0);
-    i_vip.jtag_write_reg32(32'h2002_0018, 32'h33333333, 1'b0);
-    i_vip.jtag_write_reg32(32'h2002_001C, 32'h44444444, 1'b0);
-    
-    i_vip.jtag_read_reg32(32'h2002_0000, tb_data);
-    $display("DMEM[0x000] = 0x%h (expected 0xdeadbeef)", tb_data);
-
-
-
-    // Step 2  Wake Snitch via CLINT WAKEUP_TRIG
-    $display("@%t | [WAKELET] Waking Snitch via CLINT_WAKEUP_TRIG", $time);
-    i_vip.jtag_write_reg32(ClintWakeupAddr, 32'h1);
-
-    // Step 3  Wait for WAKELET_DONE with timeout
+    // Wait for WAKELET_DONE with timeout
     $display("@%t | [WAKELET] Waiting for WAKELET_DONE...", $time);
-    fork
-      @(posedge wakelet_done_obs);
-      begin
-        #25ms;
-        $fatal(1, "@%t | [WAKELET] TIMEOUT - WAKELET_DONE never asserted!", $time);
-      end
-    join_any
-    disable fork;
+    if (!wakelet_done_obs) begin
+        fork
+            @(posedge wakelet_done_obs);
+            begin
+                #50ms;
+                $fatal(1, "@%t | [WAKELET] TIMEOUT - WAKELET_DONE never asserted!", $time);
+            end
+        join_any
+        disable fork;
+    end
     $display("@%t | [WAKELET] WAKELET_DONE asserted - binary offload PASSED", $time);
 
-    // Step 4  Verify DMEM copy result
+    // Verify DMEM copy result
     $display("@%t | [WAKELET] Verifying DMEM copy result...", $time);
     i_vip.jtag_read_reg32(32'h2002_0040, tb_data);
-    $display("@%t | [WAKELET] DMEM dst[0] = 0x%h", $time, tb_data);
-
-  // finish simulation
-
+    $display("@%t | [WAKELET] DMEM dst[0] = 0x%h (expected 0xdeadbeef)", $time, tb_data);
+ 
+    // finish simulation
     repeat(50) @(posedge sys_clk);
     $finish();
-  
-  end 
-  
+  end
+
   ////////////////
   //  Waveform  //
   ////////////////
