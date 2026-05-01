@@ -229,8 +229,8 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
     .eoc_o              (                 ),
 
     // AXI wide interface (slave port), for sensors
-    .axi_wide_slv_req_i  (                ),
-    .axi_wide_slv_rsp_o  (                )
+    .axi_slv_req_i  (                ),
+    .axi_slv_rsp_o  (                )
   );
 
 

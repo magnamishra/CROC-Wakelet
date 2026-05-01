@@ -15,6 +15,7 @@
 // -------------------------------------------------------------------
 #define DMEM_BASE      0x00020000   // wl_pkg::DataMemBaseAddr
 #define CSR_BASE       0x00040000   // wl_pkg::CsrBaseAddr
+#define PMEM_BASE      0x00050000   // wl_pkg::HwpeWmemBaseAddr
  
 // -------------------------------------------------------------------
 // Register write helper
@@ -29,7 +30,10 @@
 #define N_WORDS  8
 #define SRC_OFF  0x00
 #define DST_OFF  0x40
- 
+#define PMEM_DST_OFF   0x60        // pmem readback lands at DMEM[0x60]
+#define N_PMEM_WORDS   6
+
+
 static void workload(void) {
     volatile unsigned int *src = reg32(DMEM_BASE, SRC_OFF);
     volatile unsigned int *dst = reg32(DMEM_BASE, DST_OFF);
@@ -37,6 +41,11 @@ static void workload(void) {
     for (i = 0; i < N_WORDS; i++) {
         dst[i] = src[i];
     }
+    //volatile unsigned int *pmem = reg32(PMEM_BASE, 0x00);
+    //volatile unsigned int *pdst = reg32(DMEM_BASE, PMEM_DST_OFF);
+    //for (i = 0; i < N_PMEM_WORDS; i++) {
+        //pdst[i] = pmem[i];
+    //}
 }
  
 // -------------------------------------------------------------------

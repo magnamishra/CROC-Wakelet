@@ -24,7 +24,7 @@ dependencies:
   idma:                 { git: "https://github.com/pulp-platform/idma.git",                 rev: "__deploy__e618e4d__master" } # master with generated files
   cve2:                 { path: "rtl/cve2" } # a vendor package (no Bender.yml), see below 
   axi_obi:              { git: "https://github.com/magnamishra/axi_obi.git",                rev: ee3e0a9  }
-  wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev: 85503ec  } #wakelet with ASIC dependacy removed
+  wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev: 253efdb  } #wakelet with ASIC dependacy removed
 
 sources:
   # Level 0
@@ -39,7 +39,6 @@ sources:
   - rtl/gpio/gpio_reg_pkg.sv
   - rtl/clint/clint_reg_pkg.sv
   - rtl/obi_timer/obi_timer_reg_pkg.sv
-  - rtl/croc_wakelet_up/croc_wakelet_up_pkg.sv
   # add your design files containing anything but modules (packages) here
 
     # RTL
@@ -53,7 +52,6 @@ sources:
       - rtl/gpio/gpio.sv
       - rtl/clint/clint.sv
       - rtl/obi_timer/obi_timer.sv
-      - rtl/croc_wakelet_up/croc_wakelet_up.sv
       # Level 2
       - rtl/croc_domain.sv
       - rtl/user_domain.sv

@@ -180,7 +180,21 @@ module tb_croc_soc #(
     $display("@%t | [WAKELET] Verifying DMEM copy result...", $time);
     i_vip.jtag_read_reg32(32'h2002_0040, tb_data);
     $display("@%t | [WAKELET] DMEM dst[0] = 0x%h (expected 0xdeadbeef)", $time, tb_data);
- 
+    // Verify pmem readback - Snitch copied pmem to dmem[0x60]
+    $display("@%t | [PMEM] Verifying HWPE parameter readback...", $time);
+    i_vip.jtag_read_reg32(32'h2002_0060, tb_data);
+    $display("@%t | [PMEM] pmem[0] = 0x%h (expected 0xdeadbeef)", $time, tb_data);
+    i_vip.jtag_read_reg32(32'h2002_0064, tb_data);
+    $display("@%t | [PMEM] pmem[1] = 0x%h (expected 0xabcdef01)", $time, tb_data);
+    i_vip.jtag_read_reg32(32'h2002_0068, tb_data);
+    $display("@%t | [PMEM] pmem[2] = 0x%h (expected 0x12121212)", $time, tb_data);
+    i_vip.jtag_read_reg32(32'h2002_006c, tb_data);
+    $display("@%t | [PMEM] pmem[3] = 0x%h (expected 0x34343434)", $time, tb_data);
+    i_vip.jtag_read_reg32(32'h2002_0070, tb_data);
+    $display("@%t | [PMEM] pmem[4] = 0x%h (expected 0x56565656)", $time, tb_data);
+    i_vip.jtag_read_reg32(32'h2002_0074, tb_data);
+    $display("@%t | [PMEM] pmem[5] = 0x%h (expected 0x78787878)", $time, tb_data);
+
     // finish simulation
     repeat(50) @(posedge sys_clk);
     $finish();

@@ -10,7 +10,6 @@
  
 #include "util.h"
 #include "config.h"
-#include "snitch_workload.bin.h"
  
 // Auto-generated header containing Snitch binary as byte array
 // Regenerated automatically by `make compile` when snitch workload changes
@@ -34,7 +33,7 @@ int main() {
     set_interrupt_enable(1, IRQ_EXTERNAL);
     set_global_irq_enable(1);
  
-    // Step 2 Copy Snitch binary into Wakelet IMEM word by word
+    // Step 2.1 Copy Snitch binary into Wakelet IMEM word by word
     // CVE2 writes through OBI crossbar ? OBI?AXI bridge ? Snitch IMEM
     volatile uint32_t *imem = (volatile uint32_t *) WAKELET_IMEM_ADDR;
     const uint32_t *src = (const uint32_t *) snitch_workload_bin;
@@ -42,7 +41,18 @@ int main() {
         imem[i] = src[i];
     }
     fence();
- 
+
+    //Step 2.2 Write HWPE parameters into Snitch PMEM
+    // CVE2 writes through OBI crossbar ? OBI?AXI bridge ? Wakelet cluster bus ? pmem
+    volatile uint32_t *pmem = (volatile uint32_t *) WAKELET_PMEM_ADDR;
+    pmem[0] = 0xdeadbeef;
+    pmem[1] = 0xabcdef01;
+    pmem[2] = 0x12121212;
+    pmem[3] = 0x34343434;
+    pmem[4] = 0x56565656;
+    pmem[5] = 0x78787878;
+    fence();
+
     // Step 3 Write source data into Snitch DMEM
     // Test data for the data mover workload
     volatile uint32_t *dmem = (volatile uint32_t *) WAKELET_DMEM_ADDR;

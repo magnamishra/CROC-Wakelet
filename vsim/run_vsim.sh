@@ -74,6 +74,15 @@ generate_rtl_flist() {
         -DSYNTHESIS \
         -DSIMULATION \
         -DTARGET_WL_SRAM \
+        -DTARGET_WL_INSTR_SRAM\
+        -DTARGET_WL_DATA_SRAM\
+        -DTARGET_WL_ACT_SRAM \
+        -DACT_MEM_NUMBANKS=16 \
+        -DACT_MEM_NUMBANKWORDS=128 \
+        -DACT_MEM_NUMELEMWORD=1 \
+        -DACT_MEM_ELEMWIDTH=32 \
+        -DINSTR_MEM_NUMWORDS=128 \
+        -DDATA_MEM_NUMWORDS=128 \
         --vlog-arg=\"-svinputport=compat\" \
         > compile_rtl.tcl"
 
