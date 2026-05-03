@@ -5,7 +5,7 @@
 # Authors:
 # - Paul Scheffler  <paulsc@iis.ee.ethz.ch>
 # - Philippe Sauter <phsauter@iis.ee.ethz.ch>
-# - Magna Mishra    < add genfile to include wakelet address update > 
+# - Magna Mishra    < add rules to pull binary from snitch as header > 
 
 # Toolchain
 RISCV_XLEN    ?= 32
@@ -110,9 +110,10 @@ $(BINDIR)/%.hex: $(BINDIR)/%.elf
 .PHONY: all clean compile snitch
 
 snitch:
-	$(MAKE) -C $(WL_ROOT)/sw all-sw
+	$(MAKE) -C $(WL_ROOT) all-sw
 
 clean:
 	rm -rf $(BINDIR) $(BUILDDIR)
+	$(MAKE) -C $(WL_ROOT) clean-sw
 
 -include $(DEPFILES)

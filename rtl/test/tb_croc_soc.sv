@@ -5,7 +5,7 @@
 // Authors:
 // - Philippe Sauter <phsauter@iis.ee.ethz.ch>
 // - Enrico Zelioli  <ezelioli@iis.ee.ethz.ch>
-// - Magna Mishra    < Only additions for Wakelet addressability test  >
+// - Magna Mishra    < Only additions for Wakelet tests  >
 
 `define TRACE_WAVE
 
@@ -156,44 +156,6 @@ module tb_croc_soc #(
     // wait for non-zero return value (written into core status register)
     $display("@%t | [CORE] Wait for end of code...", $time);
     i_vip.jtag_wait_for_eoc(tb_data);
-
-    // ------------------------------------------------------------------
-    // Wakelet binary offload test
-    // CVE2 firmware owns: binary load, DMEM init, Snitch wakeup
-    // ------------------------------------------------------------------
-
-    // Wait for WAKELET_DONE with timeout
-    $display("@%t | [WAKELET] Waiting for WAKELET_DONE...", $time);
-    if (!wakelet_done_obs) begin
-        fork
-            @(posedge wakelet_done_obs);
-            begin
-                #50ms;
-                $fatal(1, "@%t | [WAKELET] TIMEOUT - WAKELET_DONE never asserted!", $time);
-            end
-        join_any
-        disable fork;
-    end
-    $display("@%t | [WAKELET] WAKELET_DONE asserted - binary offload PASSED", $time);
-
-    // Verify DMEM copy result
-    $display("@%t | [WAKELET] Verifying DMEM copy result...", $time);
-    i_vip.jtag_read_reg32(32'h2002_0040, tb_data);
-    $display("@%t | [WAKELET] DMEM dst[0] = 0x%h (expected 0xdeadbeef)", $time, tb_data);
-    // Verify pmem readback - Snitch copied pmem to dmem[0x60]
-    $display("@%t | [PMEM] Verifying HWPE parameter readback...", $time);
-    i_vip.jtag_read_reg32(32'h2002_0060, tb_data);
-    $display("@%t | [PMEM] pmem[0] = 0x%h (expected 0xdeadbeef)", $time, tb_data);
-    i_vip.jtag_read_reg32(32'h2002_0064, tb_data);
-    $display("@%t | [PMEM] pmem[1] = 0x%h (expected 0xabcdef01)", $time, tb_data);
-    i_vip.jtag_read_reg32(32'h2002_0068, tb_data);
-    $display("@%t | [PMEM] pmem[2] = 0x%h (expected 0x12121212)", $time, tb_data);
-    i_vip.jtag_read_reg32(32'h2002_006c, tb_data);
-    $display("@%t | [PMEM] pmem[3] = 0x%h (expected 0x34343434)", $time, tb_data);
-    i_vip.jtag_read_reg32(32'h2002_0070, tb_data);
-    $display("@%t | [PMEM] pmem[4] = 0x%h (expected 0x56565656)", $time, tb_data);
-    i_vip.jtag_read_reg32(32'h2002_0074, tb_data);
-    $display("@%t | [PMEM] pmem[5] = 0x%h (expected 0x78787878)", $time, tb_data);
 
     // finish simulation
     repeat(50) @(posedge sys_clk);

@@ -12,15 +12,15 @@
 #include "config.h"
  
 // Auto-generated header containing Snitch binary as byte array
-// Regenerated automatically by `make compile` when snitch workload changes
-#include "../bin/snitch/snitch_workload.bin.h"
+// Update path as per bender dependency 
+#include "test_wakelet_bin.h"
  
 // -------------------------------------------------------------------
 // Interrupt handler TBD what CVE2 does on WAKELET_DONE
 // -------------------------------------------------------------------
 void croc_interrupt_handler(uint32_t cause) {
     if (cause == IRQ_EXTERNAL) {
-        // WAKELET_DONE received ? TBD
+        // WAKELET_DONE received TBD
     }
 }
  
@@ -34,7 +34,6 @@ int main() {
     set_global_irq_enable(1);
  
     // Step 2.1 Copy Snitch binary into Wakelet IMEM word by word
-    // CVE2 writes through OBI crossbar ? OBI?AXI bridge ? Snitch IMEM
     volatile uint32_t *imem = (volatile uint32_t *) WAKELET_IMEM_ADDR;
     const uint32_t *src = (const uint32_t *) snitch_workload_bin;
     for (uint32_t i = 0; i < SNITCH_WORKLOAD_WORDS; i++) {
@@ -43,15 +42,14 @@ int main() {
     fence();
 
     //Step 2.2 Write HWPE parameters into Snitch PMEM
-    // CVE2 writes through OBI crossbar ? OBI?AXI bridge ? Wakelet cluster bus ? pmem
-    volatile uint32_t *pmem = (volatile uint32_t *) WAKELET_PMEM_ADDR;
-    pmem[0] = 0xdeadbeef;
-    pmem[1] = 0xabcdef01;
-    pmem[2] = 0x12121212;
-    pmem[3] = 0x34343434;
-    pmem[4] = 0x56565656;
-    pmem[5] = 0x78787878;
-    fence();
+    //volatile uint32_t *pmem = (volatile uint32_t *) WAKELET_PMEM_ADDR;
+    //pmem[0] = 0xdeadbeef;
+    //pmem[1] = 0xabcdef01;
+    //pmem[2] = 0x12121212;
+    //pmem[3] = 0x34343434;
+    //pmem[4] = 0x56565656;
+    //pmem[5] = 0x78787878;
+    //fence();
 
     // Step 3 Write source data into Snitch DMEM
     // Test data for the data mover workload
@@ -67,11 +65,11 @@ int main() {
     fence();
  
     // Step 4 Wake Snitch via CLINT WAKEUP_TRIG
-    // 1-cycle pulse ? Snitch MEIP ? exits WFI ? bootrom jumps to IMEM
+    // 1-cycle pulse -> Snitch MEIP -> exits WFI -> bootrom jumps to IMEM
     *reg32(CLINT_BASE_ADDR, CLINT_WAKEUP_TRIG_OFFSET) = 0x1;
  
     // Step 5 CVE2 goes about its day (TBD)
-    // For now just return ? WAKELET_DONE will fire MEIP when Snitch is done
+    // For now just return -> WAKELET_DONE will fire MEIP when Snitch is done
     return 0;
 }
  

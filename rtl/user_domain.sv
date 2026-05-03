@@ -6,12 +6,10 @@
 // - Philippe Sauter <phsauter@iis.ee.ethz.ch>
 // - Magna Mishra    <  for Wakelet integration only >
 
-///////////////////////////////////////////////////////////////////////////
-////////////For Wakelet //////////////////////////////////////////////////
-// collect User Subordinate signals /////////////////////////////////////
-// integrate into wrapper for OBI to AXI bridge ////////////////////////
-// output from wrapper heads into Wakelet Domain as an AXI-lite signal/
-//////////////////////////////////////////////////////////////////////
+// For Wakelet 
+// collect User Subordinate signals 
+// integrate into wrapper for OBI to AXI bridge 
+// output from wrapper heads into Wakelet Domain as an AXI-lite signal
 
 
 module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(

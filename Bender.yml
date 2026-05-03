@@ -24,7 +24,7 @@ dependencies:
   idma:                 { git: "https://github.com/pulp-platform/idma.git",                 rev: "__deploy__e618e4d__master" } # master with generated files
   cve2:                 { path: "rtl/cve2" } # a vendor package (no Bender.yml), see below 
   axi_obi:              { git: "https://github.com/magnamishra/axi_obi.git",                rev: ee3e0a9  }
-  wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev: 253efdb  } #wakelet with ASIC dependacy removed
+  wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev: 3f965bf  } #wakelet with ASIC dependacy removed
 
 sources:
   # Level 0

@@ -3,6 +3,8 @@
 #
 # usage: python3 gen_config.py
 
+# known issue: fix wakelet path fetch 
+
 import re
 import os
 import sys 
@@ -85,20 +87,19 @@ user_base = extract_addr_map_entry(croc, "XbarUser")
 if user_base is None:
     print("ERROR: Could not extract XbarUser from croc_pkg.sv", file=sys.stderr)
     sys.exit(1)
- 
-#instr_mem_base = extract_localparam(wl, "InstrMemBaseAddr")
-#if instr_mem_base is None:
-    #print("ERROR: Could not extract InstrMemBaseAddr from wl_pkg.sv", file=sys.stderr)
-    #sys.exit(1)
- 
-#data_mem_base = extract_localparam(wl, "DataMemBaseAddr")
-#if data_mem_base is None:
-    #print("ERROR: Could not extract DataMemBaseAddr from wl_pkg.sv", file=sys.stderr)
-    #sys.exit(1)
- 
-wakelet_imem = user_base + instr_mem_base
-wakelet_dmem = user_base + data_mem_base
- 
+
+hwpe_wmem_offset  = extract_mem_offset ( wl, "HwpeWmemBaseAddr")
+hwpe_nqmem_offset = extract_mem_offset ( wl, "HwpeNqmemBaseAddr")
+
+hwpe_wmem_base   = base_address + hwpe_wmem_offset
+hwpe_nqmem_base  = base_address + hwpe_nqmem_offset
+
+wakelet_imem =  user_base + instr_mem_base
+wakelet_dmem =  user_base + data_mem_base
+wakelet_pmem =  user_base + hwpe_wmem_base
+wakelet_nqmem = user_base + hwpe_nqmem_base
+
+
 #append address
 wakelet_block = f"""
 // Wakelet user domain (via OBI-to-AXI-Lite bridge)
@@ -107,15 +108,19 @@ wakelet_block = f"""
 #define WAKELET_IMEM_ADDR       {wakelet_imem:#010x}
 // croc_pkg::UserBaseAddr({user_base:#010x}) + wl_pkg::DataMemBaseAddr({data_mem_base:#010x})
 #define WAKELET_DMEM_ADDR       {wakelet_dmem:#010x}
+// croc_pkg::UserBaseAddr({user_base:#010x}) + wl_pkg::HwpeWmemBaseAddr({hwpe_wmem_base:#010x})
+#define WAKELET_PMEM_ADDR       {wakelet_pmem:#010x}
+// croc_pkg::UserBaseAddr({user_base:#010x}) + wl_pkg::HwpeNqmemBaseAddr({hwpe_nqmem_base:#010x})
+#define WAKELET_NQMEM_ADDR       {wakelet_nqmem:#010x}
 """
  
 # Read existing config.h
 with open(OUT_FILE, "r") as f:
     existing = f.read()
  
-# Remove any previous Wakelet block to avoid duplicates on re-run
+# Remove stale Wakelet block to avoid duplicates on re-run
 existing = re.sub(
-    r"\n// Wakelet user domain.*?#define WAKELET_DMEM_ADDR[^\n]*\n",
+    r"\n// Wakelet user domain.*?#define WAKELET_NQMEM_ADDR[^\n]*\n",
     "",
     existing,
     flags=re.DOTALL
@@ -126,5 +131,7 @@ with open(OUT_FILE, "w") as f:
     f.write(existing.rstrip("\n") + "\n" + wakelet_block)
  
 print(f"Updated {OUT_FILE}")
-print(f"  WAKELET_IMEM_ADDR = {wakelet_imem:#010x}")
-print(f"  WAKELET_DMEM_ADDR = {wakelet_dmem:#010x}")
+print(f"  WAKELET_IMEM_ADDR =  {wakelet_imem:#010x}")
+print(f"  WAKELET_DMEM_ADDR =  {wakelet_dmem:#010x}")
+print(f"  WAKELET_PMEM_ADDR =  {wakelet_pmem:#010x}")
+print(f"  WAKELET_NQMEM_ADDR = {wakelet_nqmem:#010x}")
