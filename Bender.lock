@@ -7,8 +7,8 @@ packages:
     dependencies:
     - common_cells
   axi:
-    revision: a256a3b86394fedf19e361047fccfdd7f6ef83e4
-    version: 0.39.9
+    revision: 78831b6feba265d5ee2683bbf42b4150f8a35c43
+    version: 0.39.8
     source:
       Git: https://github.com/pulp-platform/axi.git
     dependencies:
@@ -16,10 +16,10 @@ packages:
     - common_verification
     - tech_cells_generic
   axi_obi:
-    revision: null
+    revision: ee3e0a9d3f18558b5ada1d05e7dd803e197a3663
     version: null
     source:
-      Path: rtl/axi_obi
+      Git: https://github.com/magnamishra/axi_obi.git
     dependencies:
     - axi
     - common_cells
@@ -106,10 +106,10 @@ packages:
     dependencies:
     - tech_cells_generic
   hwpe-datamover-example:
-    revision: bf8a5e13c2700d93039b6455bdcab689d4ced810
+    revision: 3f71f434e6b594a55d720ed4f519e2c17e3f1324
     version: null
     source:
-      Git: https://github.com/sermazz/hwpe-datamover-example.git
+      Git: https://github.com/magnamishra/hwpe-datamover-example.git
     dependencies:
     - hci
     - hwpe-ctrl
@@ -209,7 +209,7 @@ packages:
     dependencies:
     - common_verification
   wakelet:
-    revision: 207e008d4b22e272773c005519c49b9c68245100
+    revision: 0dfac4aefb4da7019bd7534a0782a9911b5d6438
     version: null
     source:
       Git: https://github.com/magnamishra/wakelet.git

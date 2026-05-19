@@ -9,6 +9,7 @@ package:
     - "Magna Mishra    <mishram@ethz.ch>"
     # IMPORTANT: New dependancies added for Wakelet integration 
     # IMPORTANT: Remove axi_obi and wakelet from vendor package, use forked repo only
+    # Add rand_id_queue as a vendored dependency for Wakelet
     # Refer to READ.ME for details on changes 
 
 
@@ -19,12 +20,13 @@ dependencies:
   riscv-dbg:            { git: "https://github.com/pulp-platform/riscv-dbg.git",            rev: "verilator-phsauter" }
   tech_cells_generic:   { git: "https://github.com/pulp-platform/tech_cells_generic.git",   rev: fca524a    } # 0.2.13+
   apb:                  { git: "https://github.com/pulp-platform/apb.git",                  version: 0.2.4  }
+  axi:                  { git: "https://github.com/pulp-platform/axi.git",                  version: 0.39.6 }
   obi:                  { git: "https://github.com/pulp-platform/obi.git",                  rev: 6a724da    } # 0.1.7+
   obi_peripherals:      { git: "https://github.com/pulp-platform/obi_peripherals.git",      rev: 21ee04d    } # UART
   idma:                 { git: "https://github.com/pulp-platform/idma.git",                 rev: "__deploy__e618e4d__master" } # master with generated files
   cve2:                 { path: "rtl/cve2" } # a vendor package (no Bender.yml), see below 
   axi_obi:              { git: "https://github.com/magnamishra/axi_obi.git",                rev: ee3e0a9  }
-  wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev: 2ae44ce  } #wakelet with ASIC dependacy removed
+  wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev: 0dfac4a  } #wakelet with ASIC dependacy removed
 
 sources:
   # Level 0
@@ -103,7 +105,8 @@ vendor_package:
     mapping:
       - { from: 'src/clk_rst_gen.sv', to: 'clk_rst_gen.sv', patch_dir: 'src/' }
       - { from: 'Bender.yml',         to: 'Bender.yml',     patch_dir: '' }
-
+      - { from: 'src/rand_id_queue.sv', to: 'rand_id_queue.sv', patch_dir: 'src/' }  
+  
   - name: tech_cells_generic
     target_dir: rtl/tech_cells_generic
     upstream: { git: "https://github.com/pulp-platform/tech_cells_generic.git", rev: "fca524a1174f6363ba0e778f37b9f398257d4b8f" } # newest (v0.2.13+)

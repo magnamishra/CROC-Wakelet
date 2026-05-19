@@ -10,7 +10,17 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "$ROOT/rtl/common_verification/clk_rst_gen.sv" \
+    "$ROOT/rtl/common_verification/rand_id_queue.sv" \
 }]} {return 1}
 
 if {[catch { vlog -incr -sv \
@@ -22,6 +32,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "$ROOT/rtl/tech_cells_generic/tc_sram.sv" \
     "$ROOT/rtl/tech_cells_generic/tc_sram_impl.sv" \
 }]} {return 1}
@@ -35,6 +54,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "$ROOT/rtl/tech_cells_generic/tc_clk.sv" \
 }]} {return 1}
 
@@ -47,6 +75,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/common_cells/binary_to_gray.sv" \
 }]} {return 1}
@@ -60,6 +97,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/common_cells/cb_filter_pkg.sv" \
     "$ROOT/rtl/common_cells/cc_onehot.sv" \
@@ -124,6 +170,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/common_cells/cb_filter.sv" \
     "$ROOT/rtl/common_cells/cdc_fifo_2phase.sv" \
@@ -166,6 +221,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/apb/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/apb/apb_pkg.sv" \
@@ -180,6 +244,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_pkg.sv" \
@@ -199,7 +272,6 @@ if {[catch { vlog -incr -sv \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_fifo_delay_dyn.sv" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_id_remap.sv" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_id_prepend.sv" \
-    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_inval_filter.sv" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_isolate.sv" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_join.sv" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_lite_demux.sv" \
@@ -252,11 +324,21 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_chan_compare.sv" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_dumper.sv" \
     "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_sim_mem.sv" \
+    "$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/src/axi_test.sv" \
 }]} {return 1}
 
 if {[catch { vlog -incr -sv \
@@ -268,6 +350,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/rtl/apb/include" \
@@ -305,6 +396,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/cluster_interconnect-4d9b118d4aeb570e/rtl/low_latency_interco" \
     "+incdir+$ROOT/.bender/git/checkouts/cluster_interconnect-4d9b118d4aeb570e/rtl/peripheral_interco" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -360,6 +460,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/.bender/git/checkouts/fpu_div_sqrt_mvp-410a967eb4a90b69/hdl/defs_div_sqrt_mvp.sv" \
     "$ROOT/.bender/git/checkouts/fpu_div_sqrt_mvp-410a967eb4a90b69/hdl/iteration_div_sqrt_mvp.sv" \
@@ -380,6 +489,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/hwpe-stream-9deb3f878ca0b336/rtl" \
     "$ROOT/.bender/git/checkouts/hwpe-stream-9deb3f878ca0b336/rtl/hwpe_stream_package.sv" \
     "$ROOT/.bender/git/checkouts/hwpe-stream-9deb3f878ca0b336/rtl/hwpe_stream_interfaces.sv" \
@@ -429,6 +547,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "$ROOT/.bender/git/checkouts/l2_tcdm_hybrid_interco-792033f664084ef5/RTL/l2_tcdm_demux.sv" \
     "$ROOT/.bender/git/checkouts/l2_tcdm_hybrid_interco-792033f664084ef5/RTL/lint_2_apb.sv" \
     "$ROOT/.bender/git/checkouts/l2_tcdm_hybrid_interco-792033f664084ef5/RTL/lint_2_axi.sv" \
@@ -471,6 +598,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/obi/include" \
     "$ROOT/rtl/obi/obi_pkg.sv" \
@@ -496,6 +632,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/.bender/git/checkouts/redundancy_cells-2eef3a9ddf6565f3/rtl/ODRG_unit/odrg_manager_reg_pkg.sv" \
@@ -541,6 +686,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/redundancy_cells-2eef3a9ddf6565f3/rtl/ODRG_unit" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -556,6 +710,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/redundancy_cells-2eef3a9ddf6565f3/rtl/pulpissimo_tcls" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -571,6 +734,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/.bender/git/checkouts/redundancy_cells-2eef3a9ddf6565f3/rtl/HMR/rapid_recovery_pkg.sv" \
@@ -605,6 +777,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "$ROOT/.bender/git/checkouts/scm-f6f8a9ee8befd5c6/fpga_scm/register_file_1r_1w_all.sv" \
     "$ROOT/.bender/git/checkouts/scm-f6f8a9ee8befd5c6/fpga_scm/register_file_1r_1w_be.sv" \
     "$ROOT/.bender/git/checkouts/scm-f6f8a9ee8befd5c6/fpga_scm/register_file_1r_1w.sv" \
@@ -628,6 +809,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/.bender/git/checkouts/axi_riscv_atomics-0f8c8c39d7e5fcb1/src/axi_res_tbl.sv" \
@@ -649,6 +839,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/.bender/git/checkouts/cluster_icache-459d890edd8457ab/src/snitch_icache_pkg.sv" \
@@ -674,6 +873,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/.bender/git/checkouts/fpnew-2e56d83b4834f394/src/fpnew_pkg.sv" \
     "$ROOT/.bender/git/checkouts/fpnew-2e56d83b4834f394/src/fpnew_cast_multi.sv" \
@@ -714,6 +922,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/cluster_interconnect-4d9b118d4aeb570e/rtl/low_latency_interco" \
     "+incdir+$ROOT/.bender/git/checkouts/cluster_interconnect-4d9b118d4aeb570e/rtl/peripheral_interco" \
     "+incdir+$ROOT/.bender/git/checkouts/hci-9ab0ec02f3ef398d/rtl/common" \
@@ -761,6 +978,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/hwpe-ctrl-e23a79d5135eef66/rtl" \
     "$ROOT/.bender/git/checkouts/hwpe-ctrl-e23a79d5135eef66/rtl/hwpe_ctrl_interfaces.sv" \
     "$ROOT/.bender/git/checkouts/hwpe-ctrl-e23a79d5135eef66/rtl/hwpe_ctrl_package.sv" \
@@ -782,6 +1008,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/idma/include" \
     "+incdir+$ROOT/rtl/obi/include" \
@@ -808,6 +1043,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dm_pkg.sv" \
     "$ROOT/rtl/riscv-dbg/debug_rom/debug_rom.sv" \
@@ -826,6 +1070,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dmi_jtag_tap.sv" \
 }]} {return 1}
@@ -839,6 +1092,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dm_sba.sv" \
     "$ROOT/rtl/riscv-dbg/dm_top.sv" \
@@ -855,6 +1117,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/dmi_test.sv" \
 }]} {return 1}
@@ -868,6 +1139,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "$ROOT/rtl/riscv-dbg/tb/jtag_test_simple.sv" \
 }]} {return 1}
@@ -881,12 +1161,21 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/hci-9ab0ec02f3ef398d/rtl/common" \
-    "$ROOT/.bender/git/checkouts/hwpe-datamover-example-cdb7c6aee1aaeff6/rtl/datamover_engine.sv" \
-    "$ROOT/.bender/git/checkouts/hwpe-datamover-example-cdb7c6aee1aaeff6/rtl/datamover_package.sv" \
-    "$ROOT/.bender/git/checkouts/hwpe-datamover-example-cdb7c6aee1aaeff6/rtl/datamover_streamer.sv" \
-    "$ROOT/.bender/git/checkouts/hwpe-datamover-example-cdb7c6aee1aaeff6/rtl/datamover_top.sv" \
-    "$ROOT/.bender/git/checkouts/hwpe-datamover-example-cdb7c6aee1aaeff6/rtl/datamover_top_wrap.sv" \
+    "$ROOT/.bender/git/checkouts/hwpe-datamover-example-53e03887ed31402c/rtl/datamover_engine.sv" \
+    "$ROOT/.bender/git/checkouts/hwpe-datamover-example-53e03887ed31402c/rtl/datamover_package.sv" \
+    "$ROOT/.bender/git/checkouts/hwpe-datamover-example-53e03887ed31402c/rtl/datamover_streamer.sv" \
+    "$ROOT/.bender/git/checkouts/hwpe-datamover-example-53e03887ed31402c/rtl/datamover_top.sv" \
+    "$ROOT/.bender/git/checkouts/hwpe-datamover-example-53e03887ed31402c/rtl/datamover_top_wrap.sv" \
 }]} {return 1}
 
 if {[catch { vlog -incr -sv \
@@ -898,6 +1187,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -926,6 +1224,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -947,6 +1254,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -969,6 +1285,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -990,6 +1315,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -1014,6 +1348,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -1035,6 +1378,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -1062,6 +1414,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -1083,6 +1444,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -1104,6 +1474,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -1127,6 +1506,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -1155,6 +1543,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -1190,6 +1587,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/register_interface-8146d26ca39e5d02/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -1212,12 +1618,21 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/obi/include" \
-    "$ROOT/rtl/axi_obi/axi_to_detailed_mem_user.sv" \
-    "$ROOT/rtl/axi_obi/axi_to_obi.sv" \
-    "$ROOT/rtl/axi_obi/obi_to_axi.sv" \
+    "$ROOT/.bender/git/checkouts/axi_obi-7e68a2abccfddee2/src/axi_to_detailed_mem_user.sv" \
+    "$ROOT/.bender/git/checkouts/axi_obi-7e68a2abccfddee2/src/axi_to_obi.sv" \
+    "$ROOT/.bender/git/checkouts/axi_obi-7e68a2abccfddee2/src/obi_to_axi.sv" \
 }]} {return 1}
 
 if {[catch { vlog -incr -sv \
@@ -1229,6 +1644,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/cve2/include" \
     "$ROOT/rtl/cve2/cve2_pkg.sv" \
@@ -1263,6 +1687,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/rtl/common_cells/include" \
     "+incdir+$ROOT/rtl/obi/include" \
     "$ROOT/rtl/obi_uart/obi_uart_pkg.sv" \
@@ -1284,6 +1717,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/.bender/git/checkouts/hci-9ab0ec02f3ef398d/rtl/common" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/mem_interface/include" \
@@ -1292,17 +1734,19 @@ if {[catch { vlog -incr -sv \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/snitch_ssr/include" \
     "+incdir+$ROOT/.bender/git/checkouts/snitch_cluster-97c6a2948288073d/hw/tcdm_interface/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
-    "$ROOT/rtl/wakelet/wl_pkg.sv" \
-    "$ROOT/rtl/wakelet/snitch_bootrom.sv" \
-    "$ROOT/rtl/wakelet/core_instr_mem.sv" \
-    "$ROOT/rtl/wakelet/core_instr_demux.sv" \
-    "$ROOT/rtl/wakelet/core_data_mem.sv" \
-    "$ROOT/rtl/wakelet/core_data_demux.sv" \
-    "$ROOT/rtl/wakelet/core_subsystem.sv" \
-    "$ROOT/rtl/wakelet/wl_registers.sv" \
-    "$ROOT/rtl/wakelet/adapter_axi2hci.sv" \
-    "$ROOT/rtl/wakelet/hwpe_subsystem.sv" \
-    "$ROOT/rtl/wakelet/wl_top.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/wl_pkg.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/snitch_bootrom.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/core_instr_mem.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/core_instr_demux.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/core_data_mem.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/core_data_demux.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/core_subsystem.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/wl_registers.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/adapter_axi2hci.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/hwpe_param_mem.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/hwpe_param_mem_sys.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/hwpe_subsystem.sv" \
+    "$ROOT/.bender/git/checkouts/wakelet-cee6ed1deea451c2/hw/wl_top.sv" \
 }]} {return 1}
 
 if {[catch { vlog -incr -sv \
@@ -1314,6 +1758,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/apb/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -1336,6 +1789,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/apb/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -1362,6 +1824,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/apb/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \
@@ -1379,6 +1850,15 @@ if {[catch { vlog -incr -sv \
     "+define+SYNTHESIS" \
     "+define+SIMULATION" \
     "+define+TARGET_WL_SRAM" \
+    "+define+TARGET_WL_INSTR_SRAM" \
+    "+define+TARGET_WL_DATA_SRAM" \
+    "+define+TARGET_WL_ACT_SRAM" \
+    "+define+ACT_MEM_NUMBANKS=16" \
+    "+define+ACT_MEM_NUMBANKWORDS=128" \
+    "+define+ACT_MEM_NUMELEMWORD=1" \
+    "+define+ACT_MEM_ELEMWIDTH=32" \
+    "+define+INSTR_MEM_NUMWORDS=128" \
+    "+define+DATA_MEM_NUMWORDS=128" \
     "+incdir+$ROOT/.bender/git/checkouts/axi-4ecab47b5e77b28c/include" \
     "+incdir+$ROOT/rtl/apb/include" \
     "+incdir+$ROOT/rtl/common_cells/include" \

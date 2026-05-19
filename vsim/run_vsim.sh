@@ -9,6 +9,7 @@
 #
 # Authors:
 # - Thomas Benz     <tbenz@iis.ee.ethz.ch>
+# - Magna Mishra    Changes to update axi pkg dependency on Wakelet
  
 set -e  # Exit on error
 set -u  # Error on undefined vars
@@ -89,8 +90,8 @@ generate_rtl_flist() {
     run_cmd "echo [INFO][Bender] Remove absolute paths"
     run_cmd "sed -i 's|${CROC_ROOT}|..|g' compile_rtl.tcl"
 
-    run_cmd "echo [INFO][Bender] Remove axi_test.sv missing rand_id_queue_pkg dependency"
-    run_cmd "sed -i '/axi_test.sv/d' compile_rtl.tcl"
+    run_cmd "echo [INFO][Bender] Add rand_id_queue before axi_test.sv"
+    run_cmd "sed -i 's|rtl/common_verification/clk_rst_gen.sv|rtl/common_verification/clk_rst_gen.sv\" \\\\\n    \"\$ROOT/rtl/common_verification/rand_id_queue.sv|' compile_rtl.tcl"
 
     run_cmd "echo [INFO][Bender] File list generated: compile_rtl.tcl"
 

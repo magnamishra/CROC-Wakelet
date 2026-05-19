@@ -6,11 +6,12 @@
 // - Philippe Sauter <phsauter@iis.ee.ethz.ch>
 // - Magna Mishra    <  for Wakelet integration only >
 
-// For Wakelet 
-// collect User Subordinate signals 
-// integrate into wrapper for OBI to AXI bridge 
-// output from wrapper heads into Wakelet Domain as an AXI-lite signal
-
+/* Changes for wakelet 
+   - collect User Subordinate signals 
+   - integrate into wrapper for OBI to AXI bridge 
+   - output from wrapper heads into Wakelet Domain as an AXI-lite signal
+   - Add AXI connections to drive sensor input to Wakelet from User Domain
+*/
 
 module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
   parameter int unsigned GpioCount = 16,
@@ -34,7 +35,11 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
   input logic wakeup_i,
 
   //recieve wakelet done acknowledgement from wakelet_done_o
-  output logic ext_irq_o
+  output logic ext_irq_o,
+
+  // AXI wide slave port for sensor stream (driven by CROC TB)
+  input  wl_pkg::axi_req_t  axi_slv_req_i,
+  output wl_pkg::axi_resp_t axi_slv_rsp_o
 
 );
 
@@ -122,24 +127,6 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
 // User Subordinates
 //-------------------------------------------------------------------------------------------------
 
-  ///////////////////////////////////
-  // Replace this with your Design //
-  ///////////////////////////////////
-  //obi_err_sbr #(
-  // .ObiCfg      ( SbrObiCfg     ),
-  // .obi_req_t   ( sbr_obi_req_t ),
-  // .obi_rsp_t   ( sbr_obi_rsp_t ),
-  // .NumMaxTrans ( 1             ),
-  // .RspData     ( 32'hBADCAB1E  )
-  // ) i_your_design_goes_here (
-  //.clk_i,
-  //.rst_ni,
-  //.testmode_i ( testmode_i          ),
-  //.obi_req_i  ( user_design_obi_req ),
-  //.obi_rsp_o  ( user_design_obi_rsp )
-  //);
-
-
   // This module bridges OBI based CROC Soc (manager) with AXI-lite based Wakelet (subordinate)
   // Wakelet is added into the user domain with addresses from 32'h2000_0000 to 32'h3000_0000
   // CROC's OBI manager port for instruction fetch is tied off to the bridge 
@@ -149,6 +136,10 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
   wl_pkg::axi_lite_req_t  wl_axi_lite_req;
   ///wl_axi_lite_rsp maps to axi_lite_slv_rsp_o
   wl_pkg::axi_lite_resp_t wl_axi_lite_rsp;
+
+  // Wide AXI slave signals for Wakelet sensor port
+  wl_pkg::axi_req_t  wl_axi_slv_req;
+  wl_pkg::axi_resp_t wl_axi_slv_rsp;
 
   obi_to_axi #(
     /// The configuration of the OBI port (input port).
@@ -199,8 +190,9 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
   /////Wakelet top level instance/////
   ////////////////////////////////////
    
+  assign wl_axi_slv_req = axi_slv_req_i;
+  assign axi_slv_rsp_o  = wl_axi_slv_rsp;
 
-  // add something to debug here 
   wl_top #(
      
      .BaseOffset( croc_pkg::UserBaseAddr )
@@ -227,8 +219,8 @@ module user_domain import user_pkg::*; import croc_pkg::*; import wl_pkg::*; #(
     .eoc_o              (                 ),
 
     // AXI wide interface (slave port), for sensors
-    .axi_slv_req_i  (                ),
-    .axi_slv_rsp_o  (                )
+    .axi_slv_req_i      (      wl_axi_slv_req  ),
+    .axi_slv_rsp_o      (      wl_axi_slv_rsp  )
   );
 
 

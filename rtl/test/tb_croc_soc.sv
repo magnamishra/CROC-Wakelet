@@ -7,6 +7,12 @@
 // - Enrico Zelioli  <ezelioli@iis.ee.ethz.ch>
 // - Magna Mishra    < Only additions for Wakelet tests  >
 
+/* Changes 
+    - Add AXI drivers for sensor input 
+*/
+
+`include "axi/assign.svh"
+`include "axi/typedef.svh"
 `define TRACE_WAVE
 
 module tb_croc_soc #(
@@ -14,6 +20,7 @@ module tb_croc_soc #(
 );
 
   import tb_croc_pkg::*;
+  import wl_pkg::*; 
 
   // Signals fully controlled by the VIP
   // use VIP functions/tasks to manipulate these signals
@@ -91,6 +98,90 @@ module tb_croc_soc #(
     .gpio_out_i    ( gpio_out    ),
     .gpio_in_o     ( gpio_in     )
   );
+  
+  /////////////////////////////////
+  // Wide AXI TB driver (sensor) //
+  /////////////////////////////////
+
+  AXI_BUS #(
+    .AXI_ADDR_WIDTH ( wl_pkg::AxiAddrWidth  ),
+    .AXI_DATA_WIDTH ( wl_pkg::AxiDataWidth  ),
+    .AXI_ID_WIDTH   ( wl_pkg::AxiSlvIdWidth ),
+    .AXI_USER_WIDTH ( wl_pkg::AxiUserWidth  )
+  ) axi_wide_tb2dut ();
+
+  wl_pkg::axi_req_t  axi_wide_tb2dut_req;
+  wl_pkg::axi_resp_t axi_wide_tb2dut_rsp;
+
+  `AXI_ASSIGN_TO_REQ(axi_wide_tb2dut_req, axi_wide_tb2dut)
+  `AXI_ASSIGN_FROM_RESP(axi_wide_tb2dut, axi_wide_tb2dut_rsp)
+
+  AXI_BUS_DV #(
+    .AXI_ADDR_WIDTH ( wl_pkg::AxiAddrWidth  ),
+    .AXI_DATA_WIDTH ( wl_pkg::AxiDataWidth  ),
+    .AXI_ID_WIDTH   ( wl_pkg::AxiSlvIdWidth ),
+    .AXI_USER_WIDTH ( wl_pkg::AxiUserWidth  )
+  ) axi_wide_tb2dut_dv (sys_clk);
+
+  `AXI_ASSIGN(axi_wide_tb2dut, axi_wide_tb2dut_dv)
+
+  axi_test::axi_driver #(
+    .AW ( wl_pkg::AxiAddrWidth  ),
+    .DW ( wl_pkg::AxiDataWidth  ),
+    .IW ( wl_pkg::AxiSlvIdWidth ),
+    .UW ( wl_pkg::AxiUserWidth  ),
+    .TA ( ClkPeriodSys * 0.2    ),
+    .TT ( ClkPeriodSys * 0.8    )
+  ) axi_wide_driver = new(axi_wide_tb2dut_dv);
+
+  typedef axi_test::axi_ax_beat #(
+    .AW(wl_pkg::AxiAddrWidth),
+    .IW(wl_pkg::AxiSlvIdWidth),
+    .UW(wl_pkg::AxiUserWidth)
+  ) aw_beat_t;
+
+  typedef axi_test::axi_w_beat #(
+    .DW(wl_pkg::AxiDataWidth),
+    .UW(wl_pkg::AxiUserWidth)
+  ) w_beat_t;
+
+  typedef axi_test::axi_b_beat #(
+    .IW(wl_pkg::AxiSlvIdWidth),
+    .UW(wl_pkg::AxiUserWidth)
+  ) b_beat_t;
+
+  // AXI Buffer Task - identical to Wakelet test bench
+
+  task automatic send_axi_buffer (
+    input logic [wl_pkg::AxiAddrWidth-1:0] base_addr,
+    input logic [wl_pkg::AxiDataWidth-1:0] fill_data [],
+    input int unsigned                      num_bytes
+  );
+
+    automatic aw_beat_t aw = new();
+    automatic w_beat_t  w  = new();
+    automatic b_beat_t  b  = new();
+    automatic int unsigned num_beats = num_bytes / (wl_pkg::AxiDataWidth/8);
+
+    aw.ax_id    = '0;
+    aw.ax_addr  = base_addr;
+    aw.ax_len   = num_beats - 1;
+    aw.ax_size  = $clog2(wl_pkg::AxiDataWidth/8);
+    aw.ax_burst = 2'b01;
+    axi_wide_driver.send_aw(aw);
+
+    for (int i = 0; i < num_beats; i++) begin
+      w.w_data = fill_data[i];
+      w.w_strb = '1;
+      w.w_last = (i == num_beats - 1);
+      w.w_user = '0;
+      axi_wide_driver.send_w(w);
+    end
+
+    axi_wide_driver.recv_b(b);
+    @(posedge sys_clk);
+  endtask
+
 
   ////////////
   //  DUT   //
@@ -117,7 +208,9 @@ module tb_croc_soc #(
     .uart_tx_o     ( uart_tx     ),
     .gpio_i        ( gpio_in     ),
     .gpio_o        ( gpio_out    ),
-    .gpio_out_en_o ( gpio_out_en )
+    .gpio_out_en_o ( gpio_out_en ),
+    .wl_axi_slv_req_i ( axi_wide_tb2dut_req ),
+    .wl_axi_slv_rsp_o ( axi_wide_tb2dut_rsp )
   );
 
   /////////////////
@@ -153,6 +246,57 @@ module tb_croc_soc #(
     i_vip.jtag_resume();
     $display("@%t| resumed core", $time);
 
+    //AXI test 
+    // Initialize wide AXI driver
+    axi_wide_driver.reset_master();
+
+    // Initialize BUF_A and BUF_B to zeros
+    begin
+      automatic logic [wl_pkg::AxiDataWidth-1:0] zeros[];
+      automatic int unsigned beats = 4096 / (wl_pkg::AxiDataWidth/8);
+      zeros = new[beats];
+      foreach (zeros[i]) zeros[i] = '0;
+      send_axi_buffer(32'h2000_0000, zeros, 4096);  // BUF_A
+      send_axi_buffer(32'h2000_1000, zeros, 4096);  // BUF_B
+    end
+    // Give Snitch time to configure datamover
+    repeat(50000) @(posedge sys_clk);
+
+    // Background sensor loop
+    fork : sensor_process
+    begin
+      automatic int unsigned frame_num = 0;
+      automatic logic [wl_pkg::AxiDataWidth-1:0] frame_data[];
+      automatic int unsigned beats = 4096 / (wl_pkg::AxiDataWidth/8);
+      frame_data = new[beats];
+      repeat(5000) @(posedge sys_clk);
+
+      forever begin
+      frame_num++;
+      foreach (frame_data[i])
+        frame_data[i] = (frame_num >= 6 && i <= 5) ? '1 : '0;
+        send_axi_buffer(32'h2000_1000, frame_data, 4096);
+        $display("@%t | [SENSOR] Frame %0d written to BUF_B", $time, frame_num);
+      repeat(666666) @(posedge sys_clk); //33ms at 20MHz
+      end
+    end
+    join_none
+
+    // Wait for wakelet_done or timeout
+    fork
+      begin : wait_wakelet
+        @(posedge wakelet_done_obs);
+        $display("@%t | [WAKELET] PASS: motion detected, wakelet_done asserted", $time);
+        $finish(0);
+      end
+      begin : timeout
+        repeat(5000000) @(posedge sys_clk);
+        $error("@%t | [WAKELET] TIMEOUT", $time);
+        $finish(1);
+      end
+    join_any
+    disable fork;
+   
     // wait for non-zero return value (written into core status register)
     $display("@%t | [CORE] Wait for end of code...", $time);
     i_vip.jtag_wait_for_eoc(tb_data);

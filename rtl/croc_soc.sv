@@ -5,7 +5,13 @@
 // Authors:
 // - Philippe Sauter <phsauter@iis.ee.ethz.ch>
 
-module croc_soc import croc_pkg::*; #(
+/* Changes 
+    -Add ports to drive AXI sensor input from test bench 
+    -Import wl_pkg to pass wakelet signals into the test bench 
+    -Croc Soc doesn't use the signals - only passes them through
+*/
+
+module croc_soc import croc_pkg::*; import wl_pkg::*; #(
   parameter int unsigned GpioCount = 16
 ) (
   input  logic clk_i,
@@ -25,7 +31,11 @@ module croc_soc import croc_pkg::*; #(
 
   input  logic [GpioCount-1:0] gpio_i,       // Input from GPIO pins
   output logic [GpioCount-1:0] gpio_o,       // Output to GPIO pins
-  output logic [GpioCount-1:0] gpio_out_en_o // Output enable signal; 0 -> input, 1 -> output
+  output logic [GpioCount-1:0] gpio_out_en_o, // Output enable signal; 0 -> input, 1 -> output
+
+  // AXI wide slave port for Wakelet sensor stream (driven by TB)
+  input  wl_pkg::axi_req_t  wl_axi_slv_req_i,
+  output wl_pkg::axi_resp_t wl_axi_slv_rsp_o
 );
 
   logic synced_rst_n;
@@ -109,7 +119,11 @@ user_domain #(
 
   .ext_irq_o      (  ext_irq_i   ), 
 
-  .wakeup_i   (  wakeup  )
+  .wakeup_i   (  wakeup  ), 
+  
+  // Updated user domain 
+  .axi_slv_req_i ( wl_axi_slv_req_i ),
+  .axi_slv_rsp_o ( wl_axi_slv_rsp_o )
 );
 
 endmodule
