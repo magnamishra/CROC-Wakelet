@@ -6,7 +6,10 @@
 # - Tobias Senti      <tsenti@ethz.ch>
 # - Jannis Schönleber <janniss@iis.ee.ethz.ch>
 # - Philippe Sauter   <phsauter@iis.ee.ethz.ch>
-
+# - changes for Wakelet 
+#   - Change chip dimension at 65% utilization for 16 SRAM macros from Wakelet
+#   - Wakelet's memories are SCM 
+#   - P&R v1
 # Stage 01: Initialization, Floorplan, and Power Grid
 #
 # This stage performs:
@@ -67,8 +70,19 @@ utl::report "###################################################################
 # The sealring is added after OpenROAD
 # hence the OR die area is the final chip size minus the sealring thickness on each side
 
-set chipH    1916; # OR die height (top to bottom)
-set chipW    1916; # OR die width (left to right)
+#chip dimensions altered for Wakelet 
+# Dimensions:    P&R v1     [um]
+#   final chip size (4sqmm) 3750.0 x 3750.0
+#   seal ring thickness       42.0 ,   42.0 x2
+#   bonding pad               70.0 ,   70.0 x2
+#   io cell depth            180.0 ,  180.0 x2
+#   ---------------------------------------
+#   -> OR die area          3666.0 x 3666.0
+#   -> OR core area         3006.0 x 3006.0
+#   65% conservative utilization
+
+set chipH    3666; # OR die height (top to bottom)
+set chipW    3666; # OR die width (left to right)
 set padD      180; # pad depth (edge to core)
 set padW       80; # pad width (beachfront)
 set padBond    70; # bonding pad size
@@ -89,14 +103,16 @@ utl::report "# 01-03: Padring"
 utl::report "###############################################################################"
 source src/padring.tcl
 
-
 ##########################################################################
 # RAM sizes
 ##########################################################################
 set RamMaster256x64   [[ord::get_db] findMaster "RM_IHPSG13_1P_256x64_c2_bm_bist"]
 set RamSize256x64_W   [ord::dbu_to_microns [$RamMaster256x64 getWidth]]
 set RamSize256x64_H   [ord::dbu_to_microns [$RamMaster256x64 getHeight]]
-
+# Add SRAM (16) for Wakelet
+set RamMaster64x64  [[ord::get_db] findMaster "RM_IHPSG13_1P_64x64_c2_bm_bist"]
+set RamSize64x64_W  [ord::dbu_to_microns [$RamMaster64x64 getWidth]]
+set RamSize64x64_H  [ord::dbu_to_microns [$RamMaster64x64 getHeight]]
 
 ##########################################################################
 # Chip and Core Area
@@ -149,6 +165,28 @@ placeInstance $bank0_sram0 $X $Y R0
 set X [expr $X]
 set Y [expr $floor_bottomY]
 placeInstance $bank1_sram0 $X $Y MX
+# Wakelet activation memory banks
+# 8 banks R90 on left edge, 8 banks R90 on right edge
+# Portrait orientation: 64.36um wide x 784.48um tall
+
+# Gap between banks
+set bankGap 2.0
+
+# Left group (banks 0-7)
+set X $floor_leftX
+set Y $floor_bottomY
+for {set i 0} {$i < 8} {incr i} {
+    placeInstance $wl_act_sram($i) $X $Y R90
+    set X [expr $X + $RamSize64x64_H + $bankGap]
+}
+
+# Right group (banks 8-15)
+set X [expr $floor_rightX - $RamSize64x64_H]
+set Y $floor_bottomY
+for {set i 8} {$i < 16} {incr i} {
+    placeInstance $wl_act_sram($i) $X $Y MY90
+    set X [expr $X - $RamSize64x64_H - $bankGap]
+}
 
 # defined in init_tech.tcl
 insertTapCells

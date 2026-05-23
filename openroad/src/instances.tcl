@@ -25,6 +25,15 @@ set SRAM            $CROC/gen_sram_bank
 set JTAG            $CROC/i_dmi_jtag
 set SRAM_512x32     gen_512x32xBx1.i_cut
 
+#Place Wakelet macros
+set WAKELET     $USER/i_wakelet_user
+set HWPE        $WAKELET/i_hwpe_subsystem
+set SRAM_128x32 gen_128x32xBx1.i_cut
+#SRAMs
+for {set i 0} {$i < 16} {incr i} {
+    set sram "\[${i}\].i_sram/"
+    set wl_act_sram($i) "$HWPE/banks_gen${sram}${SRAM_128x32}"
+}
 # memory banks
 set sram {\[0\].i_sram/}
 set bank0_sram0 $SRAM$sram$SRAM_512x32

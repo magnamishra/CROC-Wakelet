@@ -8,6 +8,7 @@
 # Change 
 #  - Allow port mismatch for UserWidth=0 in req rsp interface 
 #  - Why : User Width is never used. The error is harmless but yosys flags it. 
+#  - Add construct to handle latches (intended by design)
 
 # This flows assumes it is beign executed in the yosys/ directory
 # but just to be sure, we go there
@@ -147,7 +148,7 @@ yosys tee -q -a ${rep_dir}/${proj_name}_instances.rpt  select -list "t:tc_sram_b
 
 # -----------------------------------------------------------------------------
 # mapping to technology
-
+# Map latches to technology cells
 # first map flip-flops
 yosys dfflibmap {*}$tech_cells_args
 
@@ -160,7 +161,7 @@ set abc_comb_script   [processAbcScript scripts/abc-opt.script]
 yosys abc {*}$tech_cells_args -D $period_ps -script $abc_comb_script -constr src/abc.constr {*}$dont_use_args -showtmp
 
 yosys clean -purge
-
+yosys techmap -map src/latch_map.v
 
 # -----------------------------------------------------------------------------
 # prep for openROAD
