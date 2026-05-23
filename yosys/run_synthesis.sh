@@ -6,7 +6,7 @@
 # Authors:
 # - Philippe Sauter <phsauter@iis.ee.ethz.ch>
 # - Thomas Benz     <tbenz@iis.ee.ethz.ch>
-#
+# - Magna Mishra    < Add TARGET_WL_INSTR_SRAM and TARGET_WL_DATA_SRAM >
 # Synthesize RTL to gate-level netlist using Yosys
 
 set -e  # Exit on error
@@ -99,6 +99,15 @@ generate_flist() {
         -D VERILATOR=1 \
         -D SYNTHESIS=1 \
         -D COMMON_CELLS_ASSERTS_OFF=1 \
+        -D TARGET_WL_INSTR_SCM=1 \
+        -D TARGET_WL_DATA_SCM=1 \
+        -D TARGET_WL_ACT_SRAM=1 \
+        -D INSTR_MEM_NUMWORDS=128 \
+        -D DATA_MEM_NUMWORDS=128 \
+        -D ACT_MEM_NUMBANKS=16 \
+        -D ACT_MEM_NUMBANKWORDS=128 \
+        -D ACT_MEM_NUMELEMWORD=1 \
+        -D ACT_MEM_ELEMWIDTH=32 \
         > src/croc.flist"
 
     run_cmd "echo [INFO][Bender] Remove absolute paths"

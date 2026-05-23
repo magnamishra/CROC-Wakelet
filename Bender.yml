@@ -25,8 +25,8 @@ dependencies:
   obi_peripherals:      { git: "https://github.com/pulp-platform/obi_peripherals.git",      rev: 21ee04d    } # UART
   idma:                 { git: "https://github.com/pulp-platform/idma.git",                 rev: "__deploy__e618e4d__master" } # master with generated files
   cve2:                 { path: "rtl/cve2" } # a vendor package (no Bender.yml), see below 
-  axi_obi:              { git: "https://github.com/magnamishra/axi_obi.git",                rev: ee3e0a9  }
-  wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev: 0dfac4a  } #wakelet with ASIC dependacy removed
+  axi_obi:              { git: "https://github.com/magnamishra/axi_obi.git",                rev: 5e8a666  }
+  wakelet:              { git: "https://github.com/magnamishra/wakelet.git",                rev: 4bffc35  } #wakelet with ASIC dependacy removed
 
 sources:
   # Level 0

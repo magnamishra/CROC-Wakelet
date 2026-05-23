@@ -4,6 +4,10 @@
 #
 # Authors:
 # - Philippe Sauter <phsauter@iis.ee.ethz.ch>
+# - Magna Mishra < adapted for Wakelet SoC integration > 
+# Change 
+#  - Allow port mismatch for UserWidth=0 in req rsp interface 
+#  - Why : User Width is never used. The error is harmless but yosys flags it. 
 
 # This flows assumes it is beign executed in the yosys/ directory
 # but just to be sure, we go there
@@ -23,8 +27,10 @@ source scripts/init_tech.tcl
 yosys plugin -i slang.so
 # default from yosys_common.tcl: top_design=croc_chip; sv_flist=./croc.flist
 yosys read_slang --top $top_design -f $sv_flist \
-        --compat-mode --keep-hierarchy \
-        --allow-use-before-declare --ignore-unknown-modules
+        --compat-mode \
+        --allow-use-before-declare --ignore-unknown-modules \
+        -Wno-duplicate-definition \
+        -Wno-implicit-port-type-mismatch
 
 # preserve hierarchy of selected modules/instances
 # 't' means type as in select all instances of this type/module
@@ -52,10 +58,17 @@ yosys setattr -set keep_hierarchy 1 "t:cdc*phase_*$*"
 yosys setattr -set keep_hierarchy 1 "t:cdc*_src*$*"
 yosys setattr -set keep_hierarchy 1 "t:cdc*_dst*$*"
 yosys setattr -set keep_hierarchy 1 "t:sync$*"
+yosys setattr -unset keep_hierarchy "t:axi_to_reqrsp_intf$*"
+yosys setattr -unset keep_hierarchy "t:reqrsp_to_axi_intf$*"
+yosys setattr -unset keep_hierarchy "t:axi_to_axi_lite_intf$*"
+yosys setattr -unset keep_hierarchy "t:hwpe_subsystem$*"
+yosys setattr -unset keep_hierarchy "t:wl_top$*"
+
 
 
 # blackbox modules (applies the *blackbox* attribute)
 yosys blackbox "t:tc_sram_blackbox$*"
+yosys blackbox "t:hwpe_subsystem$*"
 
 # map dont_touch attribute commonly applied to output-nets of async regs to keep
 yosys attrmap -rename dont_touch keep

@@ -13,11 +13,11 @@
 #include "config.h"
 #include "test_pixel_compare.h"
 
+volatile int wakelet_fired = 0;
+
 void croc_interrupt_handler(uint32_t cause) {
     if (cause == IRQ_EXTERNAL) {
-        // WAKELET_DONE received
-        //  CVE2 woken by Wakelet
-        // TBD: handle wakeup
+        wakelet_fired = 1; 
     }
 }
 
@@ -38,7 +38,7 @@ int main() {
     *reg32(CLINT_BASE_ADDR, CLINT_WAKEUP_TRIG_OFFSET) = 0x1;
 
     // CVE2 waits for WAKELET_DONE interrupt
-    while(1) asm volatile("wfi");
+    while(!wakelet_fired) asm volatile("wfi");
 
     return 0;
 }
