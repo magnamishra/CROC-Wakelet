@@ -20,6 +20,8 @@
 #
 # Input checkpoint: 01_${PROJ_NAME}.floorplan
 # Output checkpoint: 02_${PROJ_NAME}.placed
+# Changes for Wakelet 
+#  -Add input capacitance at SRAM for OpenROAD
 
 ###############################################################################
 # Setup
@@ -55,6 +57,8 @@ utl::report "Remove buffers"
 remove_buffers
 
 utl::report "Repair design"
+# Try setting on all pins matching the SRAM output pattern
+set_max_capacitance 0.5 [get_pins -hierarchical -filter "name =~ */A_DOUT*"]
 repair_design -verbose
 
 save_checkpoint 02-01_${proj_name}.pre_place

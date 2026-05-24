@@ -6,10 +6,13 @@
 # - Tobias Senti      <tsenti@ethz.ch>
 # - Jannis Schönleber <janniss@iis.ee.ethz.ch>
 # - Philippe Sauter   <phsauter@iis.ee.ethz.ch>
-# - changes for Wakelet 
+# - Changes for Wakelet 
 #   - Change chip dimension at 65% utilization for 16 SRAM macros from Wakelet
 #   - Wakelet's memories are SCM 
 #   - P&R v1
+#   - P&R v2 
+#   - Wakelet uses SRAM
+#   - Core area expanded 
 # Stage 01: Initialization, Floorplan, and Power Grid
 #
 # This stage performs:
@@ -109,91 +112,116 @@ source src/padring.tcl
 set RamMaster256x64   [[ord::get_db] findMaster "RM_IHPSG13_1P_256x64_c2_bm_bist"]
 set RamSize256x64_W   [ord::dbu_to_microns [$RamMaster256x64 getWidth]]
 set RamSize256x64_H   [ord::dbu_to_microns [$RamMaster256x64 getHeight]]
-# Add SRAM (16) for Wakelet
-set RamMaster64x64  [[ord::get_db] findMaster "RM_IHPSG13_1P_64x64_c2_bm_bist"]
-set RamSize64x64_W  [ord::dbu_to_microns [$RamMaster64x64 getWidth]]
-set RamSize64x64_H  [ord::dbu_to_microns [$RamMaster64x64 getHeight]]
+
+set RamMaster64x64    [[ord::get_db] findMaster "RM_IHPSG13_1P_64x64_c2_bm_bist"]
+set RamSize64x64_W    [ord::dbu_to_microns [$RamMaster64x64 getWidth]]
+set RamSize64x64_H    [ord::dbu_to_microns [$RamMaster64x64 getHeight]]
 
 ##########################################################################
 # Chip and Core Area
 ##########################################################################
-# core gets snapped to site-grid -> get real values
 set coreArea      [ord::get_core_area]
 set core_leftX    [lindex $coreArea 0]
 set core_bottomY  [lindex $coreArea 1]
 set core_rightX   [lindex $coreArea 2]
 set core_topY     [lindex $coreArea 3]
 
-
 ##########################################################################
-# Tracks 
+# Tracks
 ##########################################################################
-# We need to define the metal tracks 
-# (where the wires on each metal should go)
 make_tracks
 
-# the height of a standard cell, useful to align things
-set siteHeight        [ord::dbu_to_microns [[dpl::get_row_site] getHeight]]
+set siteHeight [ord::dbu_to_microns [[dpl::get_row_site] getHeight]]
 
-
-utl::report "###############################################################################"
-utl::report "# 01-04: Macro Placement"
-utl::report "###############################################################################"
-# Paths to the instances of macros
+##########################################################################
+# Macro Placement
+##########################################################################
 utl::report "Macro Names"
 source src/instances.tcl
 
-# Placing macros
-# use these for macro placement
-set floorPaddingX      12.0
-set floorPaddingY      12.0
-set floor_leftX       [expr $core_leftX + $floorPaddingX]
-set floor_bottomY     [expr $core_bottomY + $floorPaddingY]
-set floor_rightX      [expr $core_rightX - $floorPaddingX]
-set floor_topY        [expr $core_topY - $floorPaddingY]
-set floor_midpointX   [expr $floor_leftX + ($floor_rightX - $floor_leftX)/2]
-set floor_midpointY   [expr $floor_bottomY + ($floor_topY - $floor_bottomY)/2]
+set floorPaddingX     12.0
+set floorPaddingY     12.0
+set bankGap            2.0
+
+set floor_leftX   [expr $core_leftX  + $floorPaddingX]
+set floor_bottomY [expr $core_bottomY + $floorPaddingY]
+set floor_rightX  [expr $core_rightX  - $floorPaddingX]
+set floor_topY    [expr $core_topY    - $floorPaddingY]
+set floor_midX    [expr $floor_leftX  + ($floor_rightX - $floor_leftX) / 2.0]
 
 utl::report "Place Macros"
 
-# Bank0
-set X [expr $floor_midpointX - $RamSize256x64_W/2]
+# -----------------------------------------------------------------------
+# CROC SRAMs centered, hugging top and bottom edges
+# -----------------------------------------------------------------------
+# CROC SRAM 0 R0, top edge, pins face down into core
+set X [expr $floor_midX - $RamSize256x64_W / 2.0]
 set Y [expr $floor_topY - $RamSize256x64_H]
 placeInstance $bank0_sram0 $X $Y R0
 
-# Bank1
-set X [expr $X]
-set Y [expr $floor_bottomY]
+# CROC SRAM 1 MX, bottom edge, pins face up into core
+set X [expr $floor_midX - $RamSize256x64_W / 2.0]
+set Y $floor_bottomY
 placeInstance $bank1_sram0 $X $Y MX
-# Wakelet activation memory banks
-# 8 banks R90 on left edge, 8 banks R90 on right edge
-# Portrait orientation: 64.36um wide x 784.48um tall
 
-# Gap between banks
-set bankGap 2.0
+# -----------------------------------------------------------------------
+# Activation banks 0-7 top area, R0 (pins face down into core)
+# Stack A: banks 0,1,2,3 left of center
+# Stack B: banks 4,5,6,7 right of center
+# -----------------------------------------------------------------------
+set stackTop [expr $floor_topY - $RamSize256x64_H - $bankGap]
 
-# Left group (banks 0-7)
+# Stack A (banks 0-3) left
 set X $floor_leftX
-set Y $floor_bottomY
-for {set i 0} {$i < 8} {incr i} {
-    placeInstance $wl_act_sram($i) $X $Y R90
-    set X [expr $X + $RamSize64x64_H + $bankGap]
+for {set i 0} {$i < 4} {incr i} {
+    set Y [expr $stackTop - ($i + 1) * $RamSize64x64_H - $i * $bankGap]
+    placeInstance $wl_act_sram($i) $X $Y R0
 }
 
-# Right group (banks 8-15)
-set X [expr $floor_rightX - $RamSize64x64_H]
-set Y $floor_bottomY
-for {set i 8} {$i < 16} {incr i} {
-    placeInstance $wl_act_sram($i) $X $Y MY90
-    set X [expr $X - $RamSize64x64_H - $bankGap]
+# Stack B (banks 4-7)  right
+set X [expr $floor_rightX - $RamSize64x64_W]
+for {set i 4} {$i < 8} {incr i} {
+    set idx [expr $i - 4]
+    set Y [expr $stackTop - ($idx + 1) * $RamSize64x64_H - $idx * $bankGap]
+    placeInstance $wl_act_sram($i) $X $Y R0
 }
 
-# defined in init_tech.tcl
+# -----------------------------------------------------------------------
+# Wakelet instr + data memories centered, below top bank stacks
+# -----------------------------------------------------------------------
+set memY [expr $stackTop - 4 * $RamSize64x64_H - 3 * $bankGap - 20.0 - $RamSize64x64_H]
+set X_instr [expr $floor_midX - $RamSize64x64_W - 40.0]
+set X_data  [expr $floor_midX + 40.0]
+placeInstance $WL_INSTR $X_instr $memY R0
+placeInstance $WL_DATA  $X_data  $memY R0
+
+# -----------------------------------------------------------------------
+# Activation banks 8-15  bottom area, R180 (pins face up into core)
+# Stack C: banks 8,9,10,11  left of center
+# Stack D: banks 12,13,14,15 right of center
+# -----------------------------------------------------------------------
+set stackBot [expr $floor_bottomY + $RamSize256x64_H + $bankGap]
+
+# Stack C (banks 8-11) left
+set X $floor_leftX
+for {set i 8} {$i < 12} {incr i} {
+    set idx [expr $i - 8]
+    set Y [expr $stackBot + $idx * $RamSize64x64_H + $idx * $bankGap]
+    placeInstance $wl_act_sram($i) $X $Y R180
+}
+
+# Stack D (banks 12-15) right
+set X [expr $floor_rightX - $RamSize64x64_W]
+for {set i 12} {$i < 16} {incr i} {
+    set idx [expr $i - 12]
+    set Y [expr $stackBot + $idx * $RamSize64x64_H + $idx * $bankGap]
+    placeInstance $wl_act_sram($i) $X $Y R180
+}
+
+# -----------------------------------------------------------------------
 insertTapCells
-
 cut_rows -halo_width_x 1 -halo_width_y 1
 global_connect
-
 
 utl::report "###############################################################################"
 utl::report "# 01-04: Power Grid"

@@ -65,7 +65,7 @@ set mpgOffset 20; # arbitrary
 proc sram_power { name macro } {
     global mprWidth mprSpacing mprOffsetX mprOffsetY mpgWidth mpgSpacing mpgOffset
     # Macro Grid and Rings
-    define_pdn_grid -macro -cells $macro -name ${name}_grid -orient "R0 R180 MY MX R90 MX90 MY90 R270" \
+    define_pdn_grid -macro -cells $macro -name ${name}_grid -orient "R0 R180 MY MX R90 MXR90 MYR90 R270" \
         -grid_over_boundary -voltage_domains {CORE} \
         -halo {1 1}
 
