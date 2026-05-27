@@ -18,12 +18,10 @@ MLEM was designed and prepared for tapeout by ETHZ students as a bachelor projec
 The SoC is composed of two main parts:
 
 - The `croc_domain` containing a CVE2 core (a more minimal fork of Ibex), SRAM, an OBI crossbar and a few simple peripherals
-- The `user_domain` where students are invited to add their own designs or other open-source designs (peripherals, accelerators...)
+- The `user_domain` where Wakelet has been integrated 
 
 The main interconnect is OBI, you can find [the spec online](https://github.com/openhwgroup/obi/blob/072d9173c1f2d79471d6f2a10eae59ee387d4c6f/OBI-v1.6.0.pdf).
 
-The various IPs of the SoC (UART, OBI, debug-module, timer...) come from other PULP repositories and are managed by [Bender](https://github.com/pulp-platform/bender).
-To make it easier to browse and understand, only used or important building blocks are included in `rtl/<IP>`. You may want to explore the repositories of the respective IPs to find their documentation or additional functionality, the urls are in `Bender.yml`.
 
 ## Configuration
 
@@ -38,8 +36,9 @@ The main SoC configurations are in `rtl/croc_pkg.sv`:
 | `BootAddr`          | `32'h1000_0000`  | Default boot address set in 'soc_ctrl' register       |
 | `CrocAddrMap`       | see 'Memory Map' | Routing rules used for the main crossbar              |
 | `PeriphAddrMap`     | see 'Memory Map' | Routing rules used for the peripheral demuliplexer    |
-
-Further configurations can be made in `rtl/core_wrap.sv` (core specifics) and `rtl/croc_soc.sv` (connectivity between domains and to/from outside).
+| `Wakelet IMEM`     | `128` |  Number of 32bit words in Wakelet's instruction memory   |
+| `Wakelet DMEM`     | `128` |  Number of 32bit words in Wakelet's data memory   |
+| `Activation memory`     | `16` |  Number 128x32bit word banks in Wakelet's activation memory   |
 
 The SRAMs are instantiated via a technology wrapper called `tc_sram_impl` (tc: tech_cells), the technology-independent implementation is in `rtl/tech_cells_generic/tc_sram_impl.sv`. A number of SRAM configurations are implemented using IHP130 SRAM memories in `ihp13/tc_sram_impl.sv`. If an unimplemented SRAM configuration is instantiated it will result in a `tc_sram_blackbox` module which can then be easily identified from the synthesis results.
 
