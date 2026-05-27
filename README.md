@@ -1,10 +1,12 @@
-# Croc System-on-Chip
+# Croc System-on-Chip with Wakelet 
 
-A simple SoC for education using PULP IPs. Croc includes all scripts necessary to produce a nearly finished chip in [IHPs open-source 130nm technology](https://github.com/IHP-GmbH/IHP-Open-PDK/tree/main).
+Hardware Processing Engine (HWPE) accelerators are increasingly central to energy-constrained embedded systems, where tight power and area budgets demand careful architectural co-design. A compelling application class is visual wake-up domains such as gesture or activity recognition, which must respond selectively to stimuli while keeping the main processor idle. Enabling such behaviour requires an infrastructure capable of autonomously handling data streaming and accelerator control, triggering the host core only upon detection of a relevant event.
 
-As it is oriented towards education, it forgoes some configurability to increase readability of the RTL and scripts.
+In this work, we integrate Wakelet into the Croc user domain. Once preloaded by Croc, Wakelet operates independently via its built-in bootrom and local instruction memory. Its Snitch core configures an integrated HWPE through a register interface, while an AXI streaming interface delivers sensor data directly into the HWPE's activation memory. Croc's native OBI interconnect is bridged to Wakelet's AXI-Lite control interface, extending Croc's user domain to support the integration.
 
-Croc is developed as part of the PULP project, a joint effort between ETH Zurich and the University of Bologna.
+We validate the integrated system through an end-to-end image-streaming workload demonstrating Wakelet's autonomous operation, and report power and area benchmarks synthesized in IHP 130nm technology.
+
+Croc and Wakelet were developed as part of the PULP project, a joint effort between ETH Zurich and the University of Bologna.
 
 Croc was successfully taped out in Nov 2024 in the chip [MLEM](http://asic.ee.ethz.ch/2024/MLEM.html), named after the sound Yoshi makes when eating a tasty fruit. MLEM's core functionality was verified on real silicon early 2026.  
 MLEM was designed and prepared for tapeout by ETHZ students as a bachelor project. The exact code and scripts used for the tapeout can be seen in the frozen [mlem-tapeout](https://github.com/pulp-platform/croc/tree/mlem-tapeout) branch.
@@ -63,13 +65,7 @@ The address map of the default configuration is as follows:
 | `32'h0300_A000` | `32'h0300_B000` | Timer peripheral                           |
 | `32'h0300_B000` | `32'h0300_C000` | (optional) DMA configuration               |
 | `32'h1000_0000` | `+SRAM_SIZE`    | Memory banks (SRAM)                        |
-| `32'h2000_0000` | `32'h8000_0000` | Passthrough to user domain                 |
-| `32'h2000_0000` | `32'h2000_1000` | reserved for user ROM text*                |
-
-*If people modify Croc we suggest they add a ROM at this address containing additional information
-like the names of the developers, a project link or similar. This can then be written out via UART.  
-We ask people to format the ROM like a C string with zero termination and using ASCII encoding if feasible.  
-The [MLEM user ROM](https://github.com/pulp-platform/croc/blob/mlem-tapeout/rtl/user_domain/user_rom.sv) may serve as one possible reference implementation.
+| `32'h2000_0000` | `32'h3000_0000` | Wakelet's address space                    |
 
 ## Flow
 
@@ -159,12 +155,6 @@ You need to build/install the required tools manually:
 - (Optional) [Verilator](https://github.com/verilator/verilator): Simulator
 - (Optional) Questasim/Modelsim: Simulator
 
-## Getting started 
-
-## Wakelet Integration 
-This repository integrates [Wakelet](https://github.com/magnamishra/wakelet.git), a minimal cluster-like infrastructure featuring a Snitch core with private instruction and data memories, connected to CroC's user domain via an OBI-to-AXI Lite bridge.
-
-**Note:** Only RTL simulation has been tested with the Wakelet integration. Synthesis and place & route flows have not been validated and may require additional fixes.
 
 ### Architecture
 
@@ -193,21 +183,15 @@ bender checkout
 ```
 
 3. **Compile and simulate**: 
-Updated test for CVE2 to Snitch binary trasfer via firmware
 From the project root 
-```sh
-/usr/pack/riscv-1.0-kgf/STARTUP/riscv -riscv64-gcc-14.2.0 bash
 cd sw
 make clean
-make snitch 
+make snitch   # compile the Snitch-side binary used to wake up Snitch and configure the datamover
 make compile 
 exit 
-cd vsim && ./run_vsim.sh --flist --build --run-gui ../sw/bin/test/test_wakelet.hex
+cd vsim && ./run_vsim.sh --flist --build --run-gui ../sw/bin/test/test_pixel_compare.hex
 
 --flist needs to be executed only once while the RTL is compiled for the first time. Subsequent runs will work with ./run_vsim.sh --build --run-gui ../sw/bin/test/test_name.hex
-
-Note: Do not run make all from sw inside oseda bash container for this test 
-```
 
 ### Fixes and Patches
 
@@ -223,9 +207,6 @@ Wakelet's memories require either `TARGET_WL_SCM` or `TARGET_WL_SRAM` to be defi
 #### `axi_test.sv` exclusion
 `axi_test.sv` from the `axi` dependency requires `rand_id_queue_pkg` which is not available in this project. It is automatically removed from `compile_rtl.tcl` by `run_vsim.sh --flist`.
 
-
-## CROC standalone 
-
 The SoC is fully functional as-is and a simple software example is provided for simulation.
 To run the synthesis and place & route flow execute:
 
@@ -240,30 +221,16 @@ To simulate you can use:
 
 ```sh
 cd sw && make all
-cd ../verilator && ./run_verilator.sh --build --run ../sw/bin/helloworld.hex
+cd ../verilator && ./run_verilator.sh --build --run ../sw/bin/APP.hex
 ```
-
 If you have Questasim/Modelsim, you can also run:
 
 ```sh
-cd vsim && ./run_vsim.sh --build --run ../sw/bin/helloworld.hex
+cd vsim && ./run_vsim.sh --build --run ../sw/bin/APP.hex
 ```
-
+where APP is the name of the test 
+Example cd vsim && ./run_vsim.sh --build --run ../sw/bin/helloworld.hex
 All `run_` scripts have a `--help` you can use to orient yourself.
-
-### Building on Croc
-
-To add your own design, we recommend creating a new directory under `rtl/` or put single source files (small designs) into `rtl/user_domain`, then go into `Bender.yml` and add the files in the indicated places.
-This will make Bender aware of the files and any script it contains will contain your design as well.
-
-Then re-generate the default synthesis file-list:
-
-```sh
-cd yosys && ./run_synthesis.sh --flist
-cd ../verilator && ./run_verilator.sh --flist
-```
-
-If you want to add an existing design and it already containts a `Bender.yml` in its repository, you can add it as a dependency in the `Bender.yml` and reading the guide below.
 
 ## Bender
 
