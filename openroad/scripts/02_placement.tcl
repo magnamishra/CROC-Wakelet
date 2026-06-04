@@ -21,7 +21,8 @@
 # Input checkpoint: 01_${PROJ_NAME}.floorplan
 # Output checkpoint: 02_${PROJ_NAME}.placed
 # Changes for Wakelet 
-#  -Add input capacitance at SRAM for OpenROAD
+#  -Add input capacitance at SRAM for OpenROAD (reverted)
+#  -Add placememnt padding for CROC SRAM 
 
 ###############################################################################
 # Setup
@@ -58,7 +59,9 @@ remove_buffers
 
 utl::report "Repair design"
 # Try setting on all pins matching the SRAM output pattern
-set_max_capacitance 0.5 [get_pins -hierarchical -filter "name =~ */A_DOUT*"]
+# Relax max cap on SRAM output pins (IHP130 liberty has unreasonably small 6.4e-14 pF -> RSZ-0169)
+#set_max_capacitance 0.5 [get_lib_pins RM_IHPSG13_1P_256x64_c2_bm_bist/A_DOUT*]
+set_max_fanout 8 [current_design]
 repair_design -verbose
 
 save_checkpoint 02-01_${proj_name}.pre_place
@@ -77,26 +80,29 @@ set_thread_count 8
 #                     too early -> very dense regions, too late -> little to no effect
 # timing_driven:      Prioritize near-critical timing paths (reduce their length)
 
+#Move macro placement to pre global and add extra pad around pins
+set_placement_padding -masters "RM_IHPSG13_1P_256x64_c2_bm_bist" -left 4 -right 4
 # Rough placement to get parasitics from steiner-tree estimate so we can run repair_timing
 utl::report "Global Placement (1)"
-global_placement -density 0.60
+global_placement -density 0.55
 report_metrics "02-02_${proj_name}.gpl1"
 report_image "02-02_${proj_name}.gpl1" true true
 save_checkpoint 02-02_${proj_name}.gpl1
 
 utl::report "Estimate parasitics"
 estimate_parasitics -placement
+set_max_fanout 8 [current_design]
 utl::report "Repair design"
 repair_design -verbose
 save_checkpoint 02-02_${proj_name}.gpl1_fix
-
+set_max_fanout 8 [current_design]
 utl::report "Repair setup"
 repair_timing -setup -verbose
 save_checkpoint 02-02_${proj_name}.gpl1_repaired
 
 # Actual global placement with routability and timing driven
 utl::report "Global Placement (2)"
-global_placement -density 0.60 \
+global_placement -density 0.55 \
                  -routability_driven \
                  -routability_check_overflow 0.30 \
                  -timing_driven
@@ -104,10 +110,12 @@ report_metrics "02-02_${proj_name}.gpl2"
 report_image "02-02_${proj_name}.gpl2" true true
 save_checkpoint 02-02_${proj_name}.gpl2
 
+#set_placement_padding -masters "RM_IHPSG13_1P_256x64_c2_bm_bist" -left 4 -right 4
 
 utl::report "###############################################################################"
 utl::report "# 02-03: Detailed Placement"
 utl::report "###############################################################################"
+
 
 # Legalize overlapping cells
 utl::report "Detailed placement"

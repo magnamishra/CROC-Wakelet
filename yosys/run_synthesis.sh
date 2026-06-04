@@ -99,9 +99,9 @@ generate_flist() {
         -D VERILATOR=1 \
         -D SYNTHESIS=1 \
         -D COMMON_CELLS_ASSERTS_OFF=1 \
-        -D TARGET_WL_INSTR_SRAM=1 \
-        -D TARGET_WL_DATA_SRAM=1 \
-        -D TARGET_WL_ACT_SRAM=1 \
+        -D TARGET_WL_INSTR_SCM=1 \
+        -D TARGET_WL_DATA_SCM=1 \
+        -D TARGET_WL_ACT_SCM=1 \
         -D INSTR_MEM_NUMWORDS=128 \
         -D DATA_MEM_NUMWORDS=128 \
         -D ACT_MEM_NUMBANKS=16 \

@@ -13,6 +13,10 @@
 #   - P&R v2 
 #   - Wakelet uses SRAM
 #   - Core area expanded 
+#   - P&R v3 
+#   - Expand bankGap to accomodate vertical stack of SRAMs
+#   - P&R v4
+#   - Alter Croc SRAM placement, add Wakelet all SCM
 # Stage 01: Initialization, Floorplan, and Power Grid
 #
 # This stage performs:
@@ -50,11 +54,12 @@ link_design $top_design
 utl::report "Read constraints"
 read_sdc src/constraints.sdc
 
-utl::report "Check constraints"
-check_setup -verbose                                      > ${report_dir}/01-01_${proj_name}_checks.rpt
-report_checks -unconstrained -format end -no_line_splits >> ${report_dir}/01-01_${proj_name}_checks.rpt
-report_checks -format end -no_line_splits                >> ${report_dir}/01-01_${proj_name}_checks.rpt
-report_checks -format end -no_line_splits                >> ${report_dir}/01-01_${proj_name}_checks.rpt
+#utl::report "Check constraints"
+#utl::report "Check constraints (setup only - timing deferred to post-placement)"
+#check_setup > ${report_dir}/01-01_${proj_name}_checks.rpt
+#check_setup -verbose                                      > ${report_dir}/01-01_${proj_name}_checks.rpt
+#report_checks -unconstrained -format end -no_line_splits >> ${report_dir}/01-01_${proj_name}_checks.rpt
+#report_checks -format end -no_line_splits                >> ${report_dir}/01-01_${proj_name}_checks.rpt
 utl::report "Connect global nets (power)"
 source scripts/power_connect.tcl
 
@@ -73,19 +78,21 @@ utl::report "###################################################################
 # The sealring is added after OpenROAD
 # hence the OR die area is the final chip size minus the sealring thickness on each side
 
-#chip dimensions altered for Wakelet 
-# Dimensions:    P&R v1     [um]
-#   final chip size (4sqmm) 3750.0 x 3750.0
+#chip dimensions altered for Wakelet SCM 
+# Dimensions:    P&R v2     [um]
+# Core area :    13.714 sqmm (logic+macro)*0.65
+# Logic+Macro:   8.914  sqmm
+#   final chip size (sqmm) 4484.0 x 4484.0
 #   seal ring thickness       42.0 ,   42.0 x2
 #   bonding pad               70.0 ,   70.0 x2
 #   io cell depth            180.0 ,  180.0 x2
 #   ---------------------------------------
-#   -> OR die area          3666.0 x 3666.0
-#   -> OR core area         3006.0 x 3006.0
+#   -> OR die area          4400.0 x 4400.0
+#   -> OR core area         3740.0 x 3740.0
 #   65% conservative utilization
 
-set chipH    3666; # OR die height (top to bottom)
-set chipW    3666; # OR die width (left to right)
+set chipH    4400; # OR die height (top to bottom)
+set chipW    4400; # OR die width (left to right)
 set padD      180; # pad depth (edge to core)
 set padW       80; # pad width (beachfront)
 set padBond    70; # bonding pad size
@@ -113,10 +120,6 @@ set RamMaster256x64   [[ord::get_db] findMaster "RM_IHPSG13_1P_256x64_c2_bm_bist
 set RamSize256x64_W   [ord::dbu_to_microns [$RamMaster256x64 getWidth]]
 set RamSize256x64_H   [ord::dbu_to_microns [$RamMaster256x64 getHeight]]
 
-set RamMaster64x64    [[ord::get_db] findMaster "RM_IHPSG13_1P_64x64_c2_bm_bist"]
-set RamSize64x64_W    [ord::dbu_to_microns [$RamMaster64x64 getWidth]]
-set RamSize64x64_H    [ord::dbu_to_microns [$RamMaster64x64 getHeight]]
-
 ##########################################################################
 # Chip and Core Area
 ##########################################################################
@@ -141,7 +144,7 @@ source src/instances.tcl
 
 set floorPaddingX     12.0
 set floorPaddingY     12.0
-set bankGap            2.0
+set bankGap           15.0
 
 set floor_leftX   [expr $core_leftX  + $floorPaddingX]
 set floor_bottomY [expr $core_bottomY + $floorPaddingY]
@@ -152,71 +155,17 @@ set floor_midX    [expr $floor_leftX  + ($floor_rightX - $floor_leftX) / 2.0]
 utl::report "Place Macros"
 
 # -----------------------------------------------------------------------
-# CROC SRAMs centered, hugging top and bottom edges
+# CROC SRAMs stacked top-left, pins facing inward
 # -----------------------------------------------------------------------
-# CROC SRAM 0 R0, top edge, pins face down into core
-set X [expr $floor_midX - $RamSize256x64_W / 2.0]
+# CROC SRAM 0 (R0) - top of stack, pins face down into core
+set X $floor_leftX
 set Y [expr $floor_topY - $RamSize256x64_H]
 placeInstance $bank0_sram0 $X $Y R0
 
-# CROC SRAM 1 MX, bottom edge, pins face up into core
-set X [expr $floor_midX - $RamSize256x64_W / 2.0]
-set Y $floor_bottomY
+# CROC SRAM 1 (MX) - below SRAM 0, pins face up into core
+set X $floor_leftX
+set Y [expr $floor_topY - 2*$RamSize256x64_H - $bankGap]
 placeInstance $bank1_sram0 $X $Y MX
-
-# -----------------------------------------------------------------------
-# Activation banks 0-7 top area, R0 (pins face down into core)
-# Stack A: banks 0,1,2,3 left of center
-# Stack B: banks 4,5,6,7 right of center
-# -----------------------------------------------------------------------
-set stackTop [expr $floor_topY - $RamSize256x64_H - $bankGap]
-
-# Stack A (banks 0-3) left
-set X $floor_leftX
-for {set i 0} {$i < 4} {incr i} {
-    set Y [expr $stackTop - ($i + 1) * $RamSize64x64_H - $i * $bankGap]
-    placeInstance $wl_act_sram($i) $X $Y R0
-}
-
-# Stack B (banks 4-7)  right
-set X [expr $floor_rightX - $RamSize64x64_W]
-for {set i 4} {$i < 8} {incr i} {
-    set idx [expr $i - 4]
-    set Y [expr $stackTop - ($idx + 1) * $RamSize64x64_H - $idx * $bankGap]
-    placeInstance $wl_act_sram($i) $X $Y R0
-}
-
-# -----------------------------------------------------------------------
-# Wakelet instr + data memories centered, below top bank stacks
-# -----------------------------------------------------------------------
-set memY [expr $stackTop - 4 * $RamSize64x64_H - 3 * $bankGap - 20.0 - $RamSize64x64_H]
-set X_instr [expr $floor_midX - $RamSize64x64_W - 40.0]
-set X_data  [expr $floor_midX + 40.0]
-placeInstance $WL_INSTR $X_instr $memY R0
-placeInstance $WL_DATA  $X_data  $memY R0
-
-# -----------------------------------------------------------------------
-# Activation banks 8-15  bottom area, R180 (pins face up into core)
-# Stack C: banks 8,9,10,11  left of center
-# Stack D: banks 12,13,14,15 right of center
-# -----------------------------------------------------------------------
-set stackBot [expr $floor_bottomY + $RamSize256x64_H + $bankGap]
-
-# Stack C (banks 8-11) left
-set X $floor_leftX
-for {set i 8} {$i < 12} {incr i} {
-    set idx [expr $i - 8]
-    set Y [expr $stackBot + $idx * $RamSize64x64_H + $idx * $bankGap]
-    placeInstance $wl_act_sram($i) $X $Y R180
-}
-
-# Stack D (banks 12-15) right
-set X [expr $floor_rightX - $RamSize64x64_W]
-for {set i 12} {$i < 16} {incr i} {
-    set idx [expr $i - 12]
-    set Y [expr $stackBot + $idx * $RamSize64x64_H + $idx * $bankGap]
-    placeInstance $wl_act_sram($i) $X $Y R180
-}
 
 # -----------------------------------------------------------------------
 insertTapCells

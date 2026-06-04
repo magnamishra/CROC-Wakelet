@@ -6,6 +6,9 @@
 # - Tobias Senti      <tsenti@ethz.ch>
 # - Jannis Schönleber <janniss@iis.ee.ethz.ch>
 # - Philippe Sauter   <phsauter@iis.ee.ethz.ch>
+# - Changes for Wakelet
+#     -Add repair_design -verbose flag 
+#     -Add placememnt padding for wakelet
 
 # Stage 03: Clock Tree Synthesis (CTS)
 #
@@ -51,13 +54,15 @@ utl::report "Clock Tree Synthesis"
 
 # CTS buffer list (defined in init_tech.tcl)
 # ctsBuf and ctsBufRoot are set based on PDK
+# Added here for Wakelet -balance_levels
 clock_tree_synthesis -buf_list $ctsBuf -root_buf $ctsBufRoot \
-                     -sink_clustering_enable \
-                     -repair_clock_nets
+                     -sink_clustering_enable -balance_levels\
+                     -repair_clock_nets 
 
 # Legalize CTS cells
 utl::report "Detailed placement"
 set DPL_ARGS {}
+set_placement_padding -masters "RM_IHPSG13_1P_256x64_c2_bm_bist" -left 4 -right 4
 detailed_placement {*}$DPL_ARGS
 
 utl::report "Estimate parasitics"
@@ -67,10 +72,13 @@ estimate_parasitics -placement
 set_propagated_clock [all_clocks]
 
 report_metrics "03_${proj_name}.cts_unrepaired"
-
+set_max_fanout 15 [current_design]
+utl::report "Repair design"
+repair_design -verbose
 # Repair all setup timing
+set_max_fanout 15 [current_design]
 utl::report "Repair setup"
-repair_timing -setup -verbose
+repair_timing -setup -verbose -repair_tns 100
 
 # Place inserted cells
 utl::report "Detailed placement"

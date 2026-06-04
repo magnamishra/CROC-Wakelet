@@ -27,11 +27,13 @@ source scripts/init_tech.tcl
 
 yosys plugin -i slang.so
 # default from yosys_common.tcl: top_design=croc_chip; sv_flist=./croc.flist
-yosys read_slang --top $top_design -f $sv_flist \
+yosys read_slang --top $top_design -f $sv_flist --best-effort-hierarchy\
         --compat-mode \
         --allow-use-before-declare --ignore-unknown-modules \
         -Wno-duplicate-definition \
-        -Wno-implicit-port-type-mismatch
+        -Wno-implicit-port-type-mismatch \
+        -Wno-undriven
+
 
 # preserve hierarchy of selected modules/instances
 # 't' means type as in select all instances of this type/module
@@ -59,17 +61,25 @@ yosys setattr -set keep_hierarchy 1 "t:cdc*phase_*$*"
 yosys setattr -set keep_hierarchy 1 "t:cdc*_src*$*"
 yosys setattr -set keep_hierarchy 1 "t:cdc*_dst*$*"
 yosys setattr -set keep_hierarchy 1 "t:sync$*"
-yosys setattr -unset keep_hierarchy "t:axi_to_reqrsp_intf$*"
-yosys setattr -unset keep_hierarchy "t:reqrsp_to_axi_intf$*"
-yosys setattr -unset keep_hierarchy "t:axi_to_axi_lite_intf$*"
-yosys setattr -unset keep_hierarchy "t:hwpe_subsystem$*"
-yosys setattr -unset keep_hierarchy "t:wl_top$*"
-
-
-
+yosys setattr -set keep_hierarchy 1 "t:hci_arbiter$*"
+yosys setattr -set keep_hierarchy 1 "t:hci_core_r_valid_filter$*"
+yosys setattr -set keep_hierarchy 1 "t:hci_arbiter$*"
+yosys setattr -set keep_hierarchy 1 "t:hci_arbiter_tree$*"
+yosys setattr -set keep_hierarchy 1 "t:hci_core_r_valid_filter$*"
+yosys setattr -set keep_hierarchy 1 "t:hci_core_source$*"
+yosys setattr -set keep_hierarchy 1 "t:hci_core_sink$*"
+yosys setattr -set keep_hierarchy 1 "t:hci_core_mux_dynamic$*"
+yosys setattr -set keep_hierarchy 1 "t:hci_router$*"
+yosys setattr -set keep_hierarchy 1 "t:hci_router_reorder$*"
+yosys setattr -set keep_hierarchy 1 "t:datamover_streamer$*"
+yosys setattr -set keep_hierarchy 1 "t:datamover_top$*"
+yosys setattr -set keep_hierarchy 1 "t:datamover_top_wrap$*"
+yosys setattr -set keep_hierarchy 1 "t:hwpe_ctrl_slave$*"
+yosys setattr -set keep_hierarchy 1 "t:datamover_engine$*"
+yosys setattr -set keep_hierarchy 1 "t:hwpe_param_mem_sys$*"
 # blackbox modules (applies the *blackbox* attribute)
 yosys blackbox "t:tc_sram_blackbox$*"
-yosys blackbox "t:hwpe_subsystem$*"
+
 
 # map dont_touch attribute commonly applied to output-nets of async regs to keep
 yosys attrmap -rename dont_touch keep
@@ -119,7 +129,6 @@ yosys clean -purge
 
 # -----------------------------------------------------------------------------
 yosys tee -q -o "${rep_dir}/${proj_name}_generic.rpt" stat -tech cmos
-
 # flatten all hierarchy except marked modules
 yosys flatten
 yosys write_verilog -norename ${tmp_dir}/${proj_name}_flatten.v

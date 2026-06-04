@@ -21,6 +21,7 @@
 #
 # Input checkpoint: 03_${PROJ_NAME}.cts
 # Output checkpoint: 04_${PROJ_NAME}.routed
+# -Add placememnt padding for wakelet
 
 ###############################################################################
 # Setup
@@ -63,9 +64,10 @@ report_image "04-01_${proj_name}.grt" true false false true
 grt::set_verbose 0
 
 # Repair design using global route parasitics
+set_max_fanout 8 [current_design]
 utl::report "Perform buffer insertion..."
 repair_design -verbose
-
+set_max_fanout 8 [current_design]
 utl::report "Repair setup and hold violations..."
 repair_timing -setup -verbose -repair_tns 100
 repair_timing -hold -hold_margin 0.1 -verbose -repair_tns 100
@@ -73,7 +75,7 @@ repair_timing -hold -hold_margin 0.1 -verbose -repair_tns 100
 utl::report "GRT incremental..."
 # Run to get modified net by DPL
 global_route -start_incremental -allow_congestion
-
+set_placement_padding -masters "RM_IHPSG13_1P_256x64_c2_bm_bist" -left 0 -right 0
 # Running DPL to fix overlapped instances
 detailed_placement
 
@@ -100,7 +102,8 @@ repair_antennas -ratio_margin 30 -iterations 5
 
 utl::report "Detailed route"
 set_thread_count 8
-detailed_route -output_drc ${report_dir}/04_${proj_name}_route_drc.rpt \
+detailed_route -droute_end_iter 40 \
+               -output_drc ${report_dir}/04_${proj_name}_route_drc.rpt \
                -drc_report_iter_step 5 \
                -save_guide_updates \
                -clean_patches \
