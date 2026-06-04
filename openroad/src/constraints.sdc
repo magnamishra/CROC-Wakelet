@@ -82,6 +82,33 @@ if {[llength $JTAG_ASYNC_RSP_START] > 0 && [llength $JTAG_ASYNC_RSP_END] > 0} {
     set_max_delay 3.0 -from $JTAG_ASYNC_RSP_START -to $JTAG_ASYNC_RSP_END -ignore_clock_latency
 }
 
+##############
+## Wakelet ##
+#############
+set_multicycle_path 2 -setup -through [get_pins -hierarchical {*i_instr_mem.i_scm.MemContentxDP*/Q}]
+set_multicycle_path 1 -hold  -through [get_pins -hierarchical {*i_instr_mem.i_scm.MemContentxDP*/Q}]
+
+set_multicycle_path 2 -setup -through [get_pins -hierarchical {*i_data_mem.i_scm.MemContentxDP*/Q}]
+set_multicycle_path 1 -hold  -through [get_pins -hierarchical {*i_data_mem.i_scm.MemContentxDP*/Q}]
+
+set_multicycle_path 2 -setup -through [get_pins -hierarchical {*i_hwpe_subsystem.banks_gen*.i_scm.MemContentxDP*/Q}]
+set_multicycle_path 1 -hold  -through [get_pins -hierarchical {*i_hwpe_subsystem.banks_gen*.i_scm.MemContentxDP*/Q}]
+# ===== SCM memory 2-cycle read relaxation (designer-confirmed architecturally valid) =====
+# Activation / instruction / data SCMs (i_scm, MemContentxDP)
+set_multicycle_path 2 -setup -through [get_pins -hierarchical {*i_instr_mem.i_scm.MemContentxDP*/Q}]
+set_multicycle_path 1 -hold  -through [get_pins -hierarchical {*i_instr_mem.i_scm.MemContentxDP*/Q}]
+set_multicycle_path 2 -setup -through [get_pins -hierarchical {*i_data_mem.i_scm.MemContentxDP*/Q}]
+set_multicycle_path 1 -hold  -through [get_pins -hierarchical {*i_data_mem.i_scm.MemContentxDP*/Q}]
+set_multicycle_path 2 -setup -through [get_pins -hierarchical {*i_hwpe_subsystem.banks_gen*.i_scm.MemContentxDP*/Q}]
+set_multicycle_path 1 -hold  -through [get_pins -hierarchical {*i_hwpe_subsystem.banks_gen*.i_scm.MemContentxDP*/Q}]
+# HWPE parameter memories (i_param_scm, MemContentxDP) -- omitted from designer ref, included here
+set_multicycle_path 2 -setup -through [get_pins -hierarchical {*i_hwpe_wmem*i_param_scm.MemContentxDP*/Q}]
+set_multicycle_path 1 -hold  -through [get_pins -hierarchical {*i_hwpe_wmem*i_param_scm.MemContentxDP*/Q}]
+set_multicycle_path 2 -setup -through [get_pins -hierarchical {*i_hwpe_nqmem*i_param_scm.MemContentxDP*/Q}]
+set_multicycle_path 1 -hold  -through [get_pins -hierarchical {*i_hwpe_nqmem*i_param_scm.MemContentxDP*/Q}]
+# Datamover regfile (i_regfile_latch, MemContent -- note: NOT MemContentxDP)
+set_multicycle_path 2 -setup -through [get_pins -hierarchical {*i_regfile_latch.MemContent*/Q}]
+set_multicycle_path 1 -hold  -through [get_pins -hierarchical {*i_regfile_latch.MemContent*/Q}]
 #############
 ## SoC Ins ##
 #############
